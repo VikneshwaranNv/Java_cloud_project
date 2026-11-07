@@ -225,7 +225,7 @@ public class MainApp {
             allRecordedReports.add(result.getReport());
             allRecordedLogs.addAll(result.getLogs());
 
-            System.out.printf("      [Result] Score: %.2f | Tier: %s | Transit: %ds | Overrides: %d/%d | Status: %s\n\n",
+            System.out.printf("      [Result] Score: %.2f | Tier: %s | Transit: %ds | Overrides: %d/%d | Status: %s\n",
                 result.getReport().getPriorityScore(),
                 result.getReport().getPriorityTier().getLabel(),
                 result.getReport().getTotalTransitSeconds(),
@@ -233,6 +233,21 @@ public class MainApp {
                 result.getReport().getTotalIntersections(),
                 result.getReport().getCorridorStatus()
             );
+
+            // Visual ASCII Signal Wave Progression
+            System.out.println("      [Corridor Wave Map]:");
+            for (PreemptionLog log : result.getLogs()) {
+                String waveIcon = log.isOverrideTriggered() && log.getNewSignal() == SignalState.GREEN
+                    ? "[OVERRIDE -> GREEN WAVE ACTIVE]"
+                    : "[STANDARD CYCLE MAINTAINED]";
+                System.out.printf("        [%s] %-6s -> %-6s | %s\n",
+                    log.getIntersectionId(),
+                    log.getPreviousSignal(),
+                    log.getNewSignal(),
+                    waveIcon
+                );
+            }
+            System.out.println();
         }
     }
 
