@@ -1,0 +1,19 @@
+[Unit]
+Description=Smart City Traffic Signal & Emergency Vehicle Green Corridor Router
+After=network.target
+
+[Service]
+Type=simple
+User=opc
+WorkingDirectory=/opt/smart-traffic
+Environment="DB_URL=jdbc:mysql://<OCI_DB_PRIVATE_IP>:3306/smart_traffic?useSSL=true&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+Environment="DB_USER=root"
+Environment="DB_PASSWORD=<OCI_DB_PASSWORD>"
+ExecStart=/usr/bin/java -jar /opt/smart-traffic/SmartTrafficRouter-1.0.0.jar --auto
+Restart=on-failure
+RestartSec=10
+StandardOutput=append:/opt/smart-traffic/output/engine.log
+StandardError=append:/opt/smart-traffic/output/engine_error.log
+
+[Install]
+WantedBy=multi-user.target
