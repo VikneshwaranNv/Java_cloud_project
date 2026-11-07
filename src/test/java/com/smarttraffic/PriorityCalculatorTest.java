@@ -101,4 +101,28 @@ public class PriorityCalculatorTest {
         // Route Blocked on failed override even if score is high
         assertEquals(PriorityTier.ROUTE_BLOCKED, PriorityTier.evaluate(95.0, false));
     }
+
+    @Test
+    @DisplayName("Section 4: Emergency Transit Efficiency (ETE) formula")
+    void testEmergencyTransitEfficiency() {
+        // ETE = (UncongestedEstimatedTime / ActualEmergencyTransitTime) * 100
+        // e.g. Uncongested = 120s, Actual = 150s -> (120 / 150) * 100 = 80.0%
+        double ete = calculator.calculateEmergencyTransitEfficiency(120.0, 150.0);
+        assertEquals(80.0, ete, 0.001);
+
+        // Guard test: actual time <= 0
+        assertEquals(0.0, calculator.calculateEmergencyTransitEfficiency(120.0, 0.0), 0.001);
+    }
+
+    @Test
+    @DisplayName("Section 4: Congestion Mitigation Index (CMI) formula")
+    void testCongestionMitigationIndex() {
+        // CMI = 100 - (IntersectionDelayTime / StandardSignalCycle) * 100
+        // e.g. Delay = 15s, Standard Cycle = 100s -> 100 - (15 / 100) * 100 = 85.0%
+        double cmi = calculator.calculateCongestionMitigationIndex(15.0, 100.0);
+        assertEquals(85.0, cmi, 0.001);
+
+        // Zero delay: CMI = 100.0%
+        assertEquals(100.0, calculator.calculateCongestionMitigationIndex(0.0, 90.0), 0.001);
+    }
 }

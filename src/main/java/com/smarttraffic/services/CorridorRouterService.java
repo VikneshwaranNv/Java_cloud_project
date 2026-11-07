@@ -144,11 +144,24 @@ public class CorridorRouterService {
         }
         PriorityTier tier = priorityCalculator.assignTier(vehicle, overallOverrideSuccess);
 
-        // 4. Build summary text
+        // 4. Calculate Mathematical Evaluation Formulas: ETE & CMI
+        double speedMs = Math.max(20.0, vehicle.getSpeedKmh()) * (1000.0 / 3600.0);
+        double totalDistanceMeters = intersections.size() * 500.0;
+        double uncongestedTimeSec = Math.max(30.0, totalDistanceMeters / speedMs);
+        double ete = priorityCalculator.calculateEmergencyTransitEfficiency(uncongestedTimeSec, totalTransitSec);
+
+        int totalIntersectionDelay = 0;
+        for (Intersection inter : intersections) {
+            totalIntersectionDelay += inter.getClearanceDelaySec();
+        }
+        double standardCycleSec = intersections.size() * 60.0;
+        double cmi = priorityCalculator.calculateCongestionMitigationIndex(totalIntersectionDelay, standardCycleSec);
+
+        // 5. Build summary text
         String summary = String.format(
-            "Corridor completed for %s (%s). Score: %.2f | Tier: %s | Transit Time: %d sec | Overridden Intersections: %d/%d.",
+            "Corridor completed for %s (%s). Score: %.2f | Tier: %s | Transit: %ds | ETE: %.1f%% | CMI: %.1f%% | Overridden: %d/%d.",
             vehicle.getVehicleId(), vehicle.getCategory().getDisplayName(), score, tier.getLabel(),
-            totalTransitSec, overriddenCount, intersections.size()
+            totalTransitSec, ete, cmi, overriddenCount, intersections.size()
         );
 
         String reportId = "REP-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
@@ -161,6 +174,8 @@ public class CorridorRouterService {
             intersections.size(),
             overriddenCount,
             totalTransitSec,
+            ete,
+            cmi,
             overallOverrideSuccess ? "COMPLETED" : "ABORTED",
             summary
         );

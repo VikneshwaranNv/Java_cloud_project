@@ -100,12 +100,16 @@ public class PreemptionWriter {
         sb.append(String.format("  * Assigned Tier        : %s\n", report.getPriorityTier().getLabel()));
         sb.append(String.format("  * Max Permitted Delay  : %.1f minutes\n", report.getCategory().getMaxDelayMinutes()));
 
-        sb.append("\n2. CORRIDOR TRANSIT METRICS\n");
+        sb.append("\n2. CORRIDOR TRANSIT METRICS & MATHEMATICAL EVALUATION\n");
         sb.append("--------------------------------------------------------------------------------------------------------\n");
         sb.append(String.format("  * Total Intersections Traversing : %d\n", report.getTotalIntersections()));
         sb.append(String.format("  * Overridden Intersections (Wave): %d\n", report.getOverriddenIntersections()));
         sb.append(String.format("  * Total Transit Elapsed Time     : %d seconds (%.2f minutes)\n",
             report.getTotalTransitSeconds(), (report.getTotalTransitSeconds() / 60.0)));
+        sb.append(String.format("  * Emergency Transit Efficiency   : %.2f%% (ETE = [UncongestedTime / ActualTransit] * 100)\n",
+            report.getEteScore()));
+        sb.append(String.format("  * Congestion Mitigation Index    : %.2f%% (CMI = 100 - [IntersectionDelay / StandardCycle] * 100)\n",
+            report.getCmiScore()));
 
         sb.append("\n3. EXECUTIVE SUMMARY\n");
         sb.append("--------------------------------------------------------------------------------------------------------\n");

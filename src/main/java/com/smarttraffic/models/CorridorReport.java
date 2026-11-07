@@ -14,6 +14,8 @@ public class CorridorReport {
     private int totalIntersections;
     private int overriddenIntersections;
     private int totalTransitSeconds;
+    private double eteScore; // Emergency Transit Efficiency (%)
+    private double cmiScore; // Congestion Mitigation Index (%)
     private String corridorStatus;
     private String summaryText;
     private LocalDateTime generatedAt;
@@ -27,6 +29,15 @@ public class CorridorReport {
                           double priorityScore, PriorityTier priorityTier,
                           int totalIntersections, int overriddenIntersections,
                           int totalTransitSeconds, String corridorStatus, String summaryText) {
+        this(reportId, vehicleId, category, priorityScore, priorityTier, totalIntersections,
+             overriddenIntersections, totalTransitSeconds, 100.0, 100.0, corridorStatus, summaryText);
+    }
+
+    public CorridorReport(String reportId, String vehicleId, VehicleCategory category,
+                          double priorityScore, PriorityTier priorityTier,
+                          int totalIntersections, int overriddenIntersections,
+                          int totalTransitSeconds, double eteScore, double cmiScore,
+                          String corridorStatus, String summaryText) {
         this.reportId = reportId;
         this.vehicleId = vehicleId;
         this.category = category;
@@ -35,9 +46,27 @@ public class CorridorReport {
         this.totalIntersections = totalIntersections;
         this.overriddenIntersections = overriddenIntersections;
         this.totalTransitSeconds = totalTransitSeconds;
+        this.eteScore = eteScore;
+        this.cmiScore = cmiScore;
         this.corridorStatus = corridorStatus;
         this.summaryText = summaryText;
         this.generatedAt = LocalDateTime.now();
+    }
+
+    public double getEteScore() {
+        return eteScore;
+    }
+
+    public void setEteScore(double eteScore) {
+        this.eteScore = eteScore;
+    }
+
+    public double getCmiScore() {
+        return cmiScore;
+    }
+
+    public void setCmiScore(double cmiScore) {
+        this.cmiScore = cmiScore;
     }
 
     public String getReportId() {

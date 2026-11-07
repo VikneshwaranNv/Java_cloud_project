@@ -99,4 +99,35 @@ public class PriorityCalculator {
         vehicle.setPriorityTier(tier);
         return tier;
     }
+
+    /**
+     * Section 4 Mathematical Formula:
+     * Emergency Transit Efficiency (ETE) = (UncongestedEstimatedTime / ActualEmergencyTransitTime) * 100
+     *
+     * @param uncongestedEstimatedTimeSec uncongested estimated transit duration in seconds
+     * @param actualEmergencyTransitTimeSec actual emergency transit duration in seconds
+     * @return ETE percentage value
+     */
+    public double calculateEmergencyTransitEfficiency(double uncongestedEstimatedTimeSec, double actualEmergencyTransitTimeSec) {
+        if (actualEmergencyTransitTimeSec <= 0) {
+            return 0.0;
+        }
+        return (uncongestedEstimatedTimeSec / actualEmergencyTransitTimeSec) * 100.0;
+    }
+
+    /**
+     * Section 4 Mathematical Formula:
+     * Congestion Mitigation Index (CMI) = 100 - (IntersectionDelayTime / StandardSignalCycle) * 100
+     *
+     * @param intersectionDelayTimeSec total delay experienced at intersection in seconds
+     * @param standardSignalCycleSec standard signal cycle length in seconds (e.g. 90s or 120s)
+     * @return CMI percentage index
+     */
+    public double calculateCongestionMitigationIndex(double intersectionDelayTimeSec, double standardSignalCycleSec) {
+        if (standardSignalCycleSec <= 0) {
+            return 100.0;
+        }
+        double ratio = (intersectionDelayTimeSec / standardSignalCycleSec) * 100.0;
+        return 100.0 - ratio;
+    }
 }
