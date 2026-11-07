@@ -1,0 +1,24 @@
+========================================================================================================
+GREEN CORRIDOR PERFORMANCE SUMMARY - REPORT ID: REP-67FF6A58
+Generated: 2026-11-07 16:58:42 | Operational Status: COMPLETED
+========================================================================================================
+
+1. VEHICLE ROUTING PROFILE
+--------------------------------------------------------------------------------------------------------
+  * Vehicle Identifier   : EV-301
+  * Category Class       : Police VIP Convoy
+  * Priority Score       : 90.50 / 100.00
+  * Assigned Tier        : Gold Corridor
+  * Max Permitted Delay  : 2.0 minutes
+
+2. CORRIDOR TRANSIT METRICS
+--------------------------------------------------------------------------------------------------------
+  * Total Intersections Traversing : 4
+  * Overridden Intersections (Wave): 3
+  * Total Transit Elapsed Time     : 160 seconds (2.67 minutes)
+
+3. EXECUTIVE SUMMARY
+--------------------------------------------------------------------------------------------------------
+  Corridor completed for EV-301 (Police VIP Convoy). Score: 90.50 | Tier: Gold Corridor | Transit Time: 160 sec | Overridden Intersections: 3/4.
+
+========================================================================================================

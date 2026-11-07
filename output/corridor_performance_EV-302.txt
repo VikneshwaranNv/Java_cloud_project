@@ -1,0 +1,24 @@
+========================================================================================================
+GREEN CORRIDOR PERFORMANCE SUMMARY - REPORT ID: REP-41FE2D62
+Generated: 2026-11-07 16:58:42 | Operational Status: ABORTED
+========================================================================================================
+
+1. VEHICLE ROUTING PROFILE
+--------------------------------------------------------------------------------------------------------
+  * Vehicle Identifier   : EV-302
+  * Category Class       : Police VIP Convoy
+  * Priority Score       : 59.50 / 100.00
+  * Assigned Tier        : Route Blocked
+  * Max Permitted Delay  : 2.0 minutes
+
+2. CORRIDOR TRANSIT METRICS
+--------------------------------------------------------------------------------------------------------
+  * Total Intersections Traversing : 4
+  * Overridden Intersections (Wave): 0
+  * Total Transit Elapsed Time     : 600 seconds (10.00 minutes)
+
+3. EXECUTIVE SUMMARY
+--------------------------------------------------------------------------------------------------------
+  Corridor completed for EV-302 (Police VIP Convoy). Score: 59.50 | Tier: Route Blocked | Transit Time: 600 sec | Overridden Intersections: 0/4.
+
+========================================================================================================

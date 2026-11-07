@@ -1,0 +1,24 @@
+========================================================================================================
+GREEN CORRIDOR PERFORMANCE SUMMARY - REPORT ID: REP-2A1C5F97
+Generated: 2026-11-07 16:58:42 | Operational Status: ABORTED
+========================================================================================================
+
+1. VEHICLE ROUTING PROFILE
+--------------------------------------------------------------------------------------------------------
+  * Vehicle Identifier   : EV-202
+  * Category Class       : Fire Engine
+  * Priority Score       : 55.00 / 100.00
+  * Assigned Tier        : Route Blocked
+  * Max Permitted Delay  : 5.0 minutes
+
+2. CORRIDOR TRANSIT METRICS
+--------------------------------------------------------------------------------------------------------
+  * Total Intersections Traversing : 4
+  * Overridden Intersections (Wave): 0
+  * Total Transit Elapsed Time     : 840 seconds (14.00 minutes)
+
+3. EXECUTIVE SUMMARY
+--------------------------------------------------------------------------------------------------------
+  Corridor completed for EV-202 (Fire Engine). Score: 55.00 | Tier: Route Blocked | Transit Time: 840 sec | Overridden Intersections: 0/4.
+
+========================================================================================================

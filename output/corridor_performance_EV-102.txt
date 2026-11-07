@@ -1,0 +1,24 @@
+========================================================================================================
+GREEN CORRIDOR PERFORMANCE SUMMARY - REPORT ID: REP-B11A69D7
+Generated: 2026-11-07 16:58:42 | Operational Status: ABORTED
+========================================================================================================
+
+1. VEHICLE ROUTING PROFILE
+--------------------------------------------------------------------------------------------------------
+  * Vehicle Identifier   : EV-102
+  * Category Class       : Ambulance
+  * Priority Score       : 67.50 / 100.00
+  * Assigned Tier        : Route Blocked
+  * Max Permitted Delay  : 3.0 minutes
+
+2. CORRIDOR TRANSIT METRICS
+--------------------------------------------------------------------------------------------------------
+  * Total Intersections Traversing : 4
+  * Overridden Intersections (Wave): 0
+  * Total Transit Elapsed Time     : 480 seconds (8.00 minutes)
+
+3. EXECUTIVE SUMMARY
+--------------------------------------------------------------------------------------------------------
+  Corridor completed for EV-102 (Ambulance). Score: 67.50 | Tier: Route Blocked | Transit Time: 480 sec | Overridden Intersections: 0/4.
+
+========================================================================================================

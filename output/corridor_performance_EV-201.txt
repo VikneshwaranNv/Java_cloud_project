@@ -1,0 +1,24 @@
+========================================================================================================
+GREEN CORRIDOR PERFORMANCE SUMMARY - REPORT ID: REP-ED00A431
+Generated: 2026-11-07 16:58:42 | Operational Status: COMPLETED
+========================================================================================================
+
+1. VEHICLE ROUTING PROFILE
+--------------------------------------------------------------------------------------------------------
+  * Vehicle Identifier   : EV-201
+  * Category Class       : Fire Engine
+  * Priority Score       : 84.00 / 100.00
+  * Assigned Tier        : Standard Clearance
+  * Max Permitted Delay  : 5.0 minutes
+
+2. CORRIDOR TRANSIT METRICS
+--------------------------------------------------------------------------------------------------------
+  * Total Intersections Traversing : 4
+  * Overridden Intersections (Wave): 3
+  * Total Transit Elapsed Time     : 217 seconds (3.62 minutes)
+
+3. EXECUTIVE SUMMARY
+--------------------------------------------------------------------------------------------------------
+  Corridor completed for EV-201 (Fire Engine). Score: 84.00 | Tier: Standard Clearance | Transit Time: 217 sec | Overridden Intersections: 3/4.
+
+========================================================================================================

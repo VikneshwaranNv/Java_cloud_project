@@ -1,0 +1,24 @@
+========================================================================================================
+GREEN CORRIDOR PERFORMANCE SUMMARY - REPORT ID: REP-F03B3E24
+Generated: 2026-11-07 16:58:42 | Operational Status: COMPLETED
+========================================================================================================
+
+1. VEHICLE ROUTING PROFILE
+--------------------------------------------------------------------------------------------------------
+  * Vehicle Identifier   : EV-101
+  * Category Class       : Ambulance
+  * Priority Score       : 91.00 / 100.00
+  * Assigned Tier        : Gold Corridor
+  * Max Permitted Delay  : 3.0 minutes
+
+2. CORRIDOR TRANSIT METRICS
+--------------------------------------------------------------------------------------------------------
+  * Total Intersections Traversing : 4
+  * Overridden Intersections (Wave): 3
+  * Total Transit Elapsed Time     : 178 seconds (2.97 minutes)
+
+3. EXECUTIVE SUMMARY
+--------------------------------------------------------------------------------------------------------
+  Corridor completed for EV-101 (Ambulance). Score: 91.00 | Tier: Gold Corridor | Transit Time: 178 sec | Overridden Intersections: 3/4.
+
+========================================================================================================
