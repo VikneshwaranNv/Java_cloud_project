@@ -30,13 +30,14 @@ In the terminal, run:
 mvn test
 ```
 **Point out to the examiner:**
-- All 34 tests execute and pass in $\approx 3$ seconds.
+- All 36 tests execute and pass in ~3 seconds.
 - Tests cover:
   1. Beacon ID regex (`EMG-[A-Z]{3}-\d{4}`).
   2. Mathematical formulas for Ambulance, Fire Engine, and Police VIP.
-  3. Green corridor override condition ($\text{ETA} < 2.0\text{ min}$ vs boundary $\text{ETA} == 2.0\text{ min}$).
-  4. Parallel worker thread execution.
-  5. Text export and database graceful offline handling.
+  3. Mathematical evaluation formulas: Emergency Transit Efficiency (ETE) and Congestion Mitigation Index (CMI).
+  4. Green corridor override condition ($\text{ETA} < 2.0\text{ min}$ vs boundary $\text{ETA} == 2.0\text{ min}$).
+  5. Parallel worker thread execution and ASCII waveform map.
+  6. Text export and database graceful offline handling.
 
 ### Step 3: Run the Live Pipeline Demo
 In the terminal, run:
@@ -78,6 +79,21 @@ java -jar target/SmartTrafficRouter-1.0.0.jar --auto
 
 ### Q5: How did you implement the Green Corridor Override condition?
 * **Answer:** *"The specification states that if the ETA is strictly less than 2 minutes at a blocked intersection, the green corridor override must trigger. Crucially, if the ETA is exactly 2.0 minutes, the override must NOT trigger. In our `CorridorRouterService.shouldTriggerGreenCorridorOverride()`, the condition is evaluated as `(etaMinutes < 2.0) && isBlocked`. We verified this boundary condition with dedicated unit tests in `CorridorRouterServiceTest`."*
+
+### Q5b: What are the ETE and CMI mathematical formulas, and how are they calculated?
+* **Answer:**
+  - **Emergency Transit Efficiency (ETE):**
+    $$\text{ETE} = \left(\frac{\text{UncongestedEstimatedTime}}{\text{ActualEmergencyTransitTime}}\right) \times 100$$
+    *Measures how close the emergency vehicle's actual transit was to ideal free-flow traffic. An ETE of 100% indicates zero delays across the corridor.*
+  - **Congestion Mitigation Index (CMI):**
+    $$\text{CMI} = 100 - \left(\frac{\text{IntersectionDelayTime}}{\text{StandardSignalCycle}}\right) \times 100$$
+    *Measures the proportion of the normal cross-traffic signal cycle saved by preempting signals into a green wave.*
+
+### Q5c: What are the three phases in Phased Incremental Data Entry?
+* **Answer:**
+  - **Phase 1 (Dispatch Ingestion):** Captures vehicle identification, emergency class, severity code, and destination hospital/fire/police site code.
+  - **Phase 2 (Intersection Telemetry):** Captures real-time GPS coordinates, vehicle speed, intersection ID, and live camera traffic density count.
+  - **Phase 3 (Corridor Clearance Audit):** Records signal green duration, clearance delay in seconds, and total elapsed transit time for regulatory compliance and audit logs.
 
 ### Q6: How does the application handle situations where MySQL is offline?
 * **Answer:** *"Our `DBConnection` class has a diagnostic probe (`testConnection()`) and catches `SQLException` with clear hints. When MySQL is stopped or not yet configured, the application does not crash; instead, it automatically activates **Standalone Simulation Mode**, running the full multithreaded simulation, priority scoring, and TXT report generation offline. When the database is available, it persists all records seamlessly."*

@@ -29,14 +29,18 @@ public class TrafficDAO {
     // -------------------------------------------------------------------------
 
     public void insertEmergencyVehicle(EmergencyVehicle v) throws SQLException {
+        try (Connection conn = DBConnection.getConnection()) {
+            insertEmergencyVehicle(conn, v);
+        }
+    }
+
+    public void insertEmergencyVehicle(Connection conn, EmergencyVehicle v) throws SQLException {
         String sql = "INSERT INTO emergency_vehicles " +
                      "(vehicle_id, beacon_id, category, severity_code, destination_code, speed_kmh, latitude, longitude) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?) " +
                      "ON DUPLICATE KEY UPDATE speed_kmh = VALUES(speed_kmh), latitude = VALUES(latitude), longitude = VALUES(longitude)";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, v.getVehicleId());
             stmt.setString(2, v.getBeaconId());
             stmt.setString(3, v.getCategory().name());
@@ -79,14 +83,18 @@ public class TrafficDAO {
     // -------------------------------------------------------------------------
 
     public void insertIntersection(Intersection i) throws SQLException {
+        try (Connection conn = DBConnection.getConnection()) {
+            insertIntersection(conn, i);
+        }
+    }
+
+    public void insertIntersection(Connection conn, Intersection i) throws SQLException {
         String sql = "INSERT INTO intersections " +
                      "(intersection_id, name, latitude, longitude, current_signal_state, camera_density_count, is_blocked, green_duration_sec, clearance_delay_sec) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) " +
                      "ON DUPLICATE KEY UPDATE current_signal_state = VALUES(current_signal_state), camera_density_count = VALUES(camera_density_count), is_blocked = VALUES(is_blocked)";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, i.getIntersectionId());
             stmt.setString(2, i.getName());
             stmt.setDouble(3, i.getLatitude());
@@ -132,12 +140,17 @@ public class TrafficDAO {
     // -------------------------------------------------------------------------
 
     public long insertPreemptionLog(PreemptionLog log) throws SQLException {
+        try (Connection conn = DBConnection.getConnection()) {
+            return insertPreemptionLog(conn, log);
+        }
+    }
+
+    public long insertPreemptionLog(Connection conn, PreemptionLog log) throws SQLException {
         String sql = "INSERT INTO preemption_logs " +
                      "(vehicle_id, intersection_id, eta_minutes, override_triggered, override_status, previous_signal, new_signal, clearance_delay_sec, transit_duration_sec, thread_name, log_message) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, log.getVehicleId());
             stmt.setString(2, log.getIntersectionId());
@@ -205,13 +218,18 @@ public class TrafficDAO {
     // -------------------------------------------------------------------------
 
     public void insertCorridorReport(CorridorReport report) throws SQLException {
+        try (Connection conn = DBConnection.getConnection()) {
+            insertCorridorReport(conn, report);
+        }
+    }
+
+    public void insertCorridorReport(Connection conn, CorridorReport report) throws SQLException {
         String sql = "INSERT INTO corridor_reports " +
                      "(report_id, vehicle_id, category, priority_score, priority_tier, total_intersections, overridden_intersections, total_transit_seconds, corridor_status, summary_text) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
                      "ON DUPLICATE KEY UPDATE priority_score = VALUES(priority_score), corridor_status = VALUES(corridor_status), summary_text = VALUES(summary_text)";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, report.getReportId());
             stmt.setString(2, report.getVehicleId());

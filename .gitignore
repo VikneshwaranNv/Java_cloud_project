@@ -38,7 +38,9 @@ $RECYCLE.BIN/
 *.swp
 *~
 
-### Deployment Archives ###
+### Deployment Archives & Temp Staging ###
 *.zip
 *.tar.gz
+student2_handover_package/
+
 

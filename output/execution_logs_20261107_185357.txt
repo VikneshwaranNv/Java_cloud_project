@@ -1,0 +1,158 @@
+========================================================================================================
+SMART CITY TRAFFIC ROUTER - PREEMPTION EXECUTION LOGS | 2026-11-07 18:53:57
+========================================================================================================
+
+VEHICLE    | INTERSECT    | ETA(MIN) | OVERRIDE   | STATUS   | SIGNAL TRANS | WORKER THREAD            | TRANSIT(S)
+--------------------------------------------------------------------------------------------------------
+EV-101     | INT-01       |     1.40 | true       | SUCCESS  | RED -> GREEN | CorridorWorker-55        |         31
+EV-101     | INT-02       |     1.40 | true       | SUCCESS  | RED -> GREEN | CorridorWorker-56        |         32
+EV-101     | INT-03       |     1.40 | true       | SUCCESS  | RED -> GREEN | CorridorWorker-57        |         31
+EV-101     | INT-04       |     1.40 | false      | BYPASSED | YELLOW -> YELLOW | CorridorWorker-58        |         84
+EV-102     | INT-01       |     2.00 | false      | BYPASSED | RED -> RED   | CorridorWorker-59        |        120
+EV-102     | INT-02       |     2.00 | false      | BYPASSED | RED -> RED   | CorridorWorker-60        |        120
+EV-102     | INT-03       |     2.00 | false      | BYPASSED | RED -> RED   | CorridorWorker-61        |        120
+EV-102     | INT-04       |     2.00 | false      | BYPASSED | YELLOW -> YELLOW | CorridorWorker-62        |        120
+EV-201     | INT-01       |     1.80 | true       | SUCCESS  | RED -> GREEN | CorridorWorker-63        |         36
+EV-201     | INT-02       |     1.80 | true       | SUCCESS  | RED -> GREEN | CorridorWorker-64        |         37
+EV-201     | INT-03       |     1.80 | true       | SUCCESS  | RED -> GREEN | CorridorWorker-65        |         36
+EV-201     | INT-04       |     1.80 | false      | BYPASSED | YELLOW -> YELLOW | CorridorWorker-66        |        108
+EV-202     | INT-01       |     3.50 | false      | BYPASSED | RED -> RED   | CorridorWorker-67        |        210
+EV-202     | INT-02       |     3.50 | false      | BYPASSED | RED -> RED   | CorridorWorker-68        |        210
+EV-202     | INT-03       |     3.50 | false      | BYPASSED | RED -> RED   | CorridorWorker-69        |        210
+EV-202     | INT-04       |     3.50 | false      | BYPASSED | YELLOW -> YELLOW | CorridorWorker-70        |        210
+EV-301     | INT-01       |     1.20 | true       | SUCCESS  | RED -> GREEN | CorridorWorker-71        |         29
+EV-301     | INT-02       |     1.20 | true       | SUCCESS  | RED -> GREEN | CorridorWorker-72        |         30
+EV-301     | INT-03       |     1.20 | true       | SUCCESS  | RED -> GREEN | CorridorWorker-73        |         29
+EV-301     | INT-04       |     1.20 | false      | BYPASSED | YELLOW -> YELLOW | CorridorWorker-74        |         72
+EV-302     | INT-01       |     2.50 | false      | BYPASSED | RED -> RED   | CorridorWorker-75        |        150
+EV-302     | INT-02       |     2.50 | false      | BYPASSED | RED -> RED   | CorridorWorker-76        |        150
+EV-302     | INT-03       |     2.50 | false      | BYPASSED | RED -> RED   | CorridorWorker-77        |        150
+EV-302     | INT-04       |     2.50 | false      | BYPASSED | YELLOW -> YELLOW | CorridorWorker-78        |        150
+
+--- DETAILED WORKER ACTIVITY TRACES ---
+
+[EV-101 @ INT-01]
+[18:53:56.676] [CorridorWorker-55] Starting Corridor Worker for Intersection INT-01 (Sequence #1) | Vehicle: EV-101 (ETA: 1.40 min)
+[18:53:56.676] [CorridorWorker-55] -> STEP 1: Conflicting cross-traffic signals switched to RED at INT-01
+[18:53:56.761] [CorridorWorker-55] -> STEP 2: Emergency preemption activated! Signal turned GREEN for corridor at INT-01
+[18:53:56.761] [CorridorWorker-55] -> STEP 3: Green wave synchronized with adjacent corridor segment (Duration: 45s)
+[18:53:56.761] [CorridorWorker-55] -> STEP 4 & 5: Transit cleared in 31s. Status: SUCCESS
+
+[EV-101 @ INT-02]
+[18:53:56.676] [CorridorWorker-56] Starting Corridor Worker for Intersection INT-02 (Sequence #2) | Vehicle: EV-101 (ETA: 1.40 min)
+[18:53:56.676] [CorridorWorker-56] -> STEP 1: Conflicting cross-traffic signals switched to RED at INT-02
+[18:53:56.777] [CorridorWorker-56] -> STEP 2: Emergency preemption activated! Signal turned GREEN for corridor at INT-02
+[18:53:56.777] [CorridorWorker-56] -> STEP 3: Green wave synchronized with adjacent corridor segment (Duration: 50s)
+[18:53:56.777] [CorridorWorker-56] -> STEP 4 & 5: Transit cleared in 32s. Status: SUCCESS
+
+[EV-101 @ INT-03]
+[18:53:56.686] [CorridorWorker-57] Starting Corridor Worker for Intersection INT-03 (Sequence #3) | Vehicle: EV-101 (ETA: 1.40 min)
+[18:53:56.686] [CorridorWorker-57] -> STEP 1: Conflicting cross-traffic signals switched to RED at INT-03
+[18:53:56.762] [CorridorWorker-57] -> STEP 2: Emergency preemption activated! Signal turned GREEN for corridor at INT-03
+[18:53:56.762] [CorridorWorker-57] -> STEP 3: Green wave synchronized with adjacent corridor segment (Duration: 60s)
+[18:53:56.762] [CorridorWorker-57] -> STEP 4 & 5: Transit cleared in 31s. Status: SUCCESS
+
+[EV-101 @ INT-04]
+[18:53:56.686] [CorridorWorker-58] Starting Corridor Worker for Intersection INT-04 (Sequence #4) | Vehicle: EV-101 (ETA: 1.40 min)
+[18:53:56.686] [CorridorWorker-58] -> Override BYPASSED. Standard signal cycle maintained (ETA: 1.40 min, Blocked: false)
+
+[EV-102 @ INT-01]
+[18:53:56.785] [CorridorWorker-59] Starting Corridor Worker for Intersection INT-01 (Sequence #1) | Vehicle: EV-102 (ETA: 2.00 min)
+[18:53:56.785] [CorridorWorker-59] -> Override BYPASSED. Standard signal cycle maintained (ETA: 2.00 min, Blocked: true)
+
+[EV-102 @ INT-02]
+[18:53:56.785] [CorridorWorker-60] Starting Corridor Worker for Intersection INT-02 (Sequence #2) | Vehicle: EV-102 (ETA: 2.00 min)
+[18:53:56.785] [CorridorWorker-60] -> Override BYPASSED. Standard signal cycle maintained (ETA: 2.00 min, Blocked: true)
+
+[EV-102 @ INT-03]
+[18:53:56.785] [CorridorWorker-61] Starting Corridor Worker for Intersection INT-03 (Sequence #3) | Vehicle: EV-102 (ETA: 2.00 min)
+[18:53:56.785] [CorridorWorker-61] -> Override BYPASSED. Standard signal cycle maintained (ETA: 2.00 min, Blocked: true)
+
+[EV-102 @ INT-04]
+[18:53:56.785] [CorridorWorker-62] Starting Corridor Worker for Intersection INT-04 (Sequence #4) | Vehicle: EV-102 (ETA: 2.00 min)
+[18:53:56.785] [CorridorWorker-62] -> Override BYPASSED. Standard signal cycle maintained (ETA: 2.00 min, Blocked: false)
+
+[EV-201 @ INT-01]
+[18:53:56.794] [CorridorWorker-63] Starting Corridor Worker for Intersection INT-01 (Sequence #1) | Vehicle: EV-201 (ETA: 1.80 min)
+[18:53:56.794] [CorridorWorker-63] -> STEP 1: Conflicting cross-traffic signals switched to RED at INT-01
+[18:53:56.878] [CorridorWorker-63] -> STEP 2: Emergency preemption activated! Signal turned GREEN for corridor at INT-01
+[18:53:56.878] [CorridorWorker-63] -> STEP 3: Green wave synchronized with adjacent corridor segment (Duration: 45s)
+[18:53:56.878] [CorridorWorker-63] -> STEP 4 & 5: Transit cleared in 36s. Status: SUCCESS
+
+[EV-201 @ INT-02]
+[18:53:56.794] [CorridorWorker-64] Starting Corridor Worker for Intersection INT-02 (Sequence #2) | Vehicle: EV-201 (ETA: 1.80 min)
+[18:53:56.794] [CorridorWorker-64] -> STEP 1: Conflicting cross-traffic signals switched to RED at INT-02
+[18:53:56.894] [CorridorWorker-64] -> STEP 2: Emergency preemption activated! Signal turned GREEN for corridor at INT-02
+[18:53:56.894] [CorridorWorker-64] -> STEP 3: Green wave synchronized with adjacent corridor segment (Duration: 50s)
+[18:53:56.894] [CorridorWorker-64] -> STEP 4 & 5: Transit cleared in 37s. Status: SUCCESS
+
+[EV-201 @ INT-03]
+[18:53:56.794] [CorridorWorker-65] Starting Corridor Worker for Intersection INT-03 (Sequence #3) | Vehicle: EV-201 (ETA: 1.80 min)
+[18:53:56.794] [CorridorWorker-65] -> STEP 1: Conflicting cross-traffic signals switched to RED at INT-03
+[18:53:56.878] [CorridorWorker-65] -> STEP 2: Emergency preemption activated! Signal turned GREEN for corridor at INT-03
+[18:53:56.878] [CorridorWorker-65] -> STEP 3: Green wave synchronized with adjacent corridor segment (Duration: 60s)
+[18:53:56.878] [CorridorWorker-65] -> STEP 4 & 5: Transit cleared in 36s. Status: SUCCESS
+
+[EV-201 @ INT-04]
+[18:53:56.794] [CorridorWorker-66] Starting Corridor Worker for Intersection INT-04 (Sequence #4) | Vehicle: EV-201 (ETA: 1.80 min)
+[18:53:56.803] [CorridorWorker-66] -> Override BYPASSED. Standard signal cycle maintained (ETA: 1.80 min, Blocked: false)
+
+[EV-202 @ INT-01]
+[18:53:56.910] [CorridorWorker-67] Starting Corridor Worker for Intersection INT-01 (Sequence #1) | Vehicle: EV-202 (ETA: 3.50 min)
+[18:53:56.910] [CorridorWorker-67] -> Override BYPASSED. Standard signal cycle maintained (ETA: 3.50 min, Blocked: true)
+
+[EV-202 @ INT-02]
+[18:53:56.910] [CorridorWorker-68] Starting Corridor Worker for Intersection INT-02 (Sequence #2) | Vehicle: EV-202 (ETA: 3.50 min)
+[18:53:56.910] [CorridorWorker-68] -> Override BYPASSED. Standard signal cycle maintained (ETA: 3.50 min, Blocked: true)
+
+[EV-202 @ INT-03]
+[18:53:56.910] [CorridorWorker-69] Starting Corridor Worker for Intersection INT-03 (Sequence #3) | Vehicle: EV-202 (ETA: 3.50 min)
+[18:53:56.910] [CorridorWorker-69] -> Override BYPASSED. Standard signal cycle maintained (ETA: 3.50 min, Blocked: true)
+
+[EV-202 @ INT-04]
+[18:53:56.910] [CorridorWorker-70] Starting Corridor Worker for Intersection INT-04 (Sequence #4) | Vehicle: EV-202 (ETA: 3.50 min)
+[18:53:56.910] [CorridorWorker-70] -> Override BYPASSED. Standard signal cycle maintained (ETA: 3.50 min, Blocked: false)
+
+[EV-301 @ INT-01]
+[18:53:56.910] [CorridorWorker-71] Starting Corridor Worker for Intersection INT-01 (Sequence #1) | Vehicle: EV-301 (ETA: 1.20 min)
+[18:53:56.910] [CorridorWorker-71] -> STEP 1: Conflicting cross-traffic signals switched to RED at INT-01
+[18:53:56.995] [CorridorWorker-71] -> STEP 2: Emergency preemption activated! Signal turned GREEN for corridor at INT-01
+[18:53:56.995] [CorridorWorker-71] -> STEP 3: Green wave synchronized with adjacent corridor segment (Duration: 45s)
+[18:53:56.995] [CorridorWorker-71] -> STEP 4 & 5: Transit cleared in 29s. Status: SUCCESS
+
+[EV-301 @ INT-02]
+[18:53:56.910] [CorridorWorker-72] Starting Corridor Worker for Intersection INT-02 (Sequence #2) | Vehicle: EV-301 (ETA: 1.20 min)
+[18:53:56.910] [CorridorWorker-72] -> STEP 1: Conflicting cross-traffic signals switched to RED at INT-02
+[18:53:57.011] [CorridorWorker-72] -> STEP 2: Emergency preemption activated! Signal turned GREEN for corridor at INT-02
+[18:53:57.011] [CorridorWorker-72] -> STEP 3: Green wave synchronized with adjacent corridor segment (Duration: 50s)
+[18:53:57.011] [CorridorWorker-72] -> STEP 4 & 5: Transit cleared in 30s. Status: SUCCESS
+
+[EV-301 @ INT-03]
+[18:53:56.910] [CorridorWorker-73] Starting Corridor Worker for Intersection INT-03 (Sequence #3) | Vehicle: EV-301 (ETA: 1.20 min)
+[18:53:56.920] [CorridorWorker-73] -> STEP 1: Conflicting cross-traffic signals switched to RED at INT-03
+[18:53:56.995] [CorridorWorker-73] -> STEP 2: Emergency preemption activated! Signal turned GREEN for corridor at INT-03
+[18:53:56.995] [CorridorWorker-73] -> STEP 3: Green wave synchronized with adjacent corridor segment (Duration: 60s)
+[18:53:56.995] [CorridorWorker-73] -> STEP 4 & 5: Transit cleared in 29s. Status: SUCCESS
+
+[EV-301 @ INT-04]
+[18:53:56.920] [CorridorWorker-74] Starting Corridor Worker for Intersection INT-04 (Sequence #4) | Vehicle: EV-301 (ETA: 1.20 min)
+[18:53:56.920] [CorridorWorker-74] -> Override BYPASSED. Standard signal cycle maintained (ETA: 1.20 min, Blocked: false)
+
+[EV-302 @ INT-01]
+[18:53:57.027] [CorridorWorker-75] Starting Corridor Worker for Intersection INT-01 (Sequence #1) | Vehicle: EV-302 (ETA: 2.50 min)
+[18:53:57.027] [CorridorWorker-75] -> Override BYPASSED. Standard signal cycle maintained (ETA: 2.50 min, Blocked: true)
+
+[EV-302 @ INT-02]
+[18:53:57.027] [CorridorWorker-76] Starting Corridor Worker for Intersection INT-02 (Sequence #2) | Vehicle: EV-302 (ETA: 2.50 min)
+[18:53:57.027] [CorridorWorker-76] -> Override BYPASSED. Standard signal cycle maintained (ETA: 2.50 min, Blocked: true)
+
+[EV-302 @ INT-03]
+[18:53:57.027] [CorridorWorker-77] Starting Corridor Worker for Intersection INT-03 (Sequence #3) | Vehicle: EV-302 (ETA: 2.50 min)
+[18:53:57.027] [CorridorWorker-77] -> Override BYPASSED. Standard signal cycle maintained (ETA: 2.50 min, Blocked: true)
+
+[EV-302 @ INT-04]
+[18:53:57.027] [CorridorWorker-78] Starting Corridor Worker for Intersection INT-04 (Sequence #4) | Vehicle: EV-302 (ETA: 2.50 min)
+[18:53:57.027] [CorridorWorker-78] -> Override BYPASSED. Standard signal cycle maintained (ETA: 2.50 min, Blocked: false)
+
+========================================================================================================
+END OF EXECUTION LOG

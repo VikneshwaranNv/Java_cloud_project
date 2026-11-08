@@ -1,0 +1,70 @@
+================================================================================
+   SMART CITY TRAFFIC ENGINE - STUDENT 2 (DATABASE HOST) QUICK START GUIDE
+================================================================================
+
+Hello Student 2!
+You are the Database Host for the Smart City Emergency Vehicle Green Corridor System.
+Your responsibility is:
+1. Deploy and manage the MySQL Database (`smart_traffic_db`).
+2. Run `smart_traffic_schema.sql` to create all 4 required tables:
+   - emergency_vehicles
+   - intersections
+   - preemption_logs
+   - corridor_reports
+3. Expose port 3306 (or provide an ngrok TCP tunnel URL) so Student 1 can connect remotely across 300km.
+4. Collect the required Architecture Verification proofs (firewall, logs, schema).
+
+--------------------------------------------------------------------------------
+STEP 1: HOW TO IMPORT THE DATABASE SCHEMA
+--------------------------------------------------------------------------------
+Option A - If you have MySQL installed on your laptop / Windows:
+   Open Command Prompt / PowerShell in this folder and run:
+   mysql -u root -p < smart_traffic_schema.sql
+
+Option B - If you are using OCI VM 2 (Ubuntu Linux):
+   sudo mysql < smart_traffic_schema.sql
+   or run the included `import_database.sh`
+
+--------------------------------------------------------------------------------
+STEP 2: HOW TO CONNECT ACROSS 300 KM (CHOOSE ONE OPTION)
+--------------------------------------------------------------------------------
+OPTION 1 (FASTEST - NO PUBLIC IP / CREDIT CARD NEEDED):
+   Download ngrok (https://ngrok.com) on your laptop.
+   Run:
+     ngrok tcp 3306
+   Ngrok will show an address like:
+     tcp://4.tcp.ngrok.io:12345
+   Send this host (4.tcp.ngrok.io) and port (12345) to Student 1!
+
+OPTION 2 (OCI VM 2 PUBLIC IP):
+   If you created an Oracle Cloud VM:
+   - Add Ingress Rule in VCN Security List: Port 3306, CIDR 0.0.0.0/0
+   - Open Linux Firewall:
+     sudo iptables -I INPUT 6 -m state --state NEW -p tcp --dport 3306 -j ACCEPT
+     sudo netfilter-persistent save
+   - Edit /etc/mysql/mysql.conf.d/mysqld.cnf:
+     bind-address = 0.0.0.0
+   - Restart: sudo systemctl restart mysql
+   - Share your OCI VM 2 Public IP with Student 1!
+
+--------------------------------------------------------------------------------
+STEP 3: USING VS CODE WITH ANTIGRAVITY EXTENSION
+--------------------------------------------------------------------------------
+1. Open this unzipped folder in VS Code.
+2. Open the file `STUDENT2_PROMPT_AND_INSTRUCTIONS.md`.
+3. Copy the prompt inside and paste it into Antigravity chat.
+4. Antigravity will automatically assist you in executing all steps, verifying
+   port 3306, checking MySQL tables, and generating submission screenshots!
+
+--------------------------------------------------------------------------------
+FILES INCLUDED IN THIS PACKAGE:
+--------------------------------------------------------------------------------
+1. smart_traffic_schema.sql             - SQL Schema creating the 4 required tables
+2. STUDENT2_HANDOVER_SPECIFICATION.md   - Detailed technical instructions & DB schema
+3. STUDENT2_PROMPT_AND_INSTRUCTIONS.md  - Ready-to-use Prompt for VS Code Antigravity
+4. README.md                            - Full system architecture and documentation
+5. emergency_gps.csv                    - Telemetry sample data
+6. import_database.bat                  - 1-click Windows MySQL schema importer
+7. import_database.sh                   - 1-click Linux MySQL schema importer
+8. src/                                 - Complete Java source code for reference & submission
+================================================================================

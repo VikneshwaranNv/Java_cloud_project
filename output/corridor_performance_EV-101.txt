@@ -1,6 +1,6 @@
 ========================================================================================================
-GREEN CORRIDOR PERFORMANCE SUMMARY - REPORT ID: REP-42ACA17D
-Generated: 2026-11-07 18:53:56 | Operational Status: COMPLETED
+GREEN CORRIDOR PERFORMANCE SUMMARY - REPORT ID: REP-E23B5C78
+Generated: 2026-11-08 18:41:15 | Operational Status: COMPLETED
 ========================================================================================================
 
 1. VEHICLE ROUTING PROFILE
@@ -11,14 +11,16 @@ Generated: 2026-11-07 18:53:56 | Operational Status: COMPLETED
   * Assigned Tier        : Gold Corridor
   * Max Permitted Delay  : 3.0 minutes
 
-2. CORRIDOR TRANSIT METRICS
+2. CORRIDOR TRANSIT METRICS & MATHEMATICAL EVALUATION
 --------------------------------------------------------------------------------------------------------
   * Total Intersections Traversing : 4
   * Overridden Intersections (Wave): 3
   * Total Transit Elapsed Time     : 178 seconds (2.97 minutes)
+  * Emergency Transit Efficiency   : 59.05% (ETE = [UncongestedTime / ActualTransit] * 100)
+  * Congestion Mitigation Index    : 91.67% (CMI = 100 - [IntersectionDelay / StandardCycle] * 100)
 
 3. EXECUTIVE SUMMARY
 --------------------------------------------------------------------------------------------------------
-  Corridor completed for EV-101 (Ambulance). Score: 91.00 | Tier: Gold Corridor | Transit Time: 178 sec | Overridden Intersections: 3/4.
+  Corridor completed for EV-101 (Ambulance). Score: 91.00 | Tier: Gold Corridor | Transit: 178s | ETE: 59.1% | CMI: 91.7% | Overridden: 3/4.
 
 ========================================================================================================

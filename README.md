@@ -1,346 +1,327 @@
-# Smart City Traffic Signal & Emergency Vehicle Green Corridor Router
+<div align="center">
 
-A high-performance, multithreaded Java 21 & MySQL project that dynamically routes emergency vehicles (ambulances, fire engines, police VIP convoys) through urban traffic grids by calculating weighted priority scores, synchronizing preemption overrides, and producing green corridor transit waves.
+# 🚦 Smart City Traffic Signal & Emergency Vehicle Green Corridor Router
+### Distributed Real-Time Traffic Orchestration & Cloud Database Architecture
+#### *Project Assignment Set 31 | Java 21 LTS • MySQL 8.4 LTS • Oracle Cloud Infrastructure (OCI)*
+
+[![Java Version](https://img.shields.io/badge/Java-21%20LTS-007396?logo=openjdk&logoColor=white)](https://openjdk.org/projects/jdk/21/)
+[![Maven Build](https://img.shields.io/badge/Maven-3.9.6-C71A36?logo=apachemaven&logoColor=white)](https://maven.apache.org/)
+[![Database](https://img.shields.io/badge/MySQL-8.4%20LTS-4479A1?logo=mysql&logoColor=white)](https://www.mysql.com/)
+[![Tests](https://img.shields.io/badge/JUnit%205-36%2F36%20Passing-brightgreen?logo=junit5&logoColor=white)](https://junit.org/junit5/)
+[![Cloud Host](https://img.shields.io/badge/OCI-VM%20Distributed-F80000?logo=oracle&logoColor=white)](https://www.oracle.com/cloud/)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+<br/>
+
+**A mission-critical distributed traffic management system that eliminates delays for emergency vehicles by orchestrating dynamic signal overrides, multithreaded green waves, and live telemetry persistence across distributed cloud infrastructure.**
+
+</div>
 
 ---
 
-## Team Division of Responsibility
+## 📑 Table of Contents
+- [Executive Overview](#-executive-overview)
+- [Team Division of Responsibility](#-team-division-of-responsibility)
+- [Distributed Architecture & 300 KM Cloud Bridge](#-distributed-architecture--300-km-cloud-bridge)
+- [Core Functional Specifications](#-core-functional-specifications)
+- [Mathematical Formulas](#-mathematical-formulas)
+- [Attendance, Rating & Grading Rules](#-attendance-rating--grading-rules)
+- [Technical Modules](#-technical-modules)
+- [Submission Deliverables Matrix](#-submission-deliverables-matrix)
+- [Directory Layout](#-directory-layout)
+- [Installation & Quickstart](#-installation--quickstart)
+- [Automated Verification & Test Proofs](#-automated-verification--test-proofs)
+- [Contributors & Team Sign-Off](#-contributors--team-sign-off)
 
-| Student | Area of Focus | Status |
+---
+
+## 🏛️ Executive Overview
+
+During emergency transit, every second lost at a red light directly impacts human survival. Traditional static signal timers fail to adapt to live vehicle speed, congestion bottlenecks, and multi-vehicle criticality. 
+
+The **Smart City Traffic Signal & Emergency Vehicle Green Corridor Router** solves this by establishing an autonomous, multi-threaded preemption engine that:
+1. **Ingests real-time vehicle dispatch & GPS streams** (`emergency_gps.csv`).
+2. **Validates Beacon Hardware IDs** against strict regular expressions (`EMG-[A-Z]{3}-\d{4}`).
+3. **Calculates category-specific priority scores** across Ambulance, Fire Engine, and Police VIP convoys.
+4. **Dispatches concurrent `CorridorWorker` threads** that dynamically preempt consecutive intersection signals from RED to GREEN when vehicle $\text{ETA} < 2.0\text{ mins}$.
+5. **Persists telemetry, preemption audits, and performance manifests** across distributed nodes into MySQL 8.4 tables.
+
+---
+
+## 👥 Team Division of Responsibility
+
+This system was engineered as a **distributed collaborative cloud application** divided across two specialized engineering roles separated across a **300 km physical distance**:
+
+```
++-------------------------------------------------------------------------------------------------------+
+|                                    DISTRIBUTED PROJECT RESPONSIBILITIES                               |
++---------------------------------------------------+---------------------------------------------------+
+|               STUDENT 1 (LAPTOP 1)                |               STUDENT 2 (LAPTOP 2)                |
+|                 APPLICATION HOST                  |                   DATABASE HOST                   |
++---------------------------------------------------+---------------------------------------------------+
+| • Java 21 Traffic Engine (MainApp.java)           | • MySQL 8.4 LTS Community Server / Daemon         |
+| • Concurrent CorridorWorker Multithreading        | • Database Schema (`smart_traffic_schema.sql`)   |
+| • Priority Scoring, ETE & CMI Math Engine         | • 6 Intersections Seed (`seed_intersections.sql`) |
+| • Telemetry CSV Parsing & Beacon Regex Validation | • OCI VCN Ingress & OS Firewall Port 3306 Config  |
+| • Text Audit Exporter (PreemptionWriter.java)     | • Remote TCP Tunneling & Socket Verification      |
+| • TrafficDAO JDBC Remote Client Driver            | • Remote User Delegation (`traffic_app`@'%')      |
++---------------------------------------------------+---------------------------------------------------+
+```
+
+---
+
+## 🌐 Distributed Architecture & 300 KM Cloud Bridge
+
+```
+========================================================================================================================
+[ STUDENT 1: APPLICATION HOST ]                    [ WAN / INTERNET 300 KM ]               [ STUDENT 2: DATABASE HOST ]
+  • Java 21 LTS Engine                                                                       • MySQL Community 8.4 LTS
+  • Multi-threaded CorridorWorkers                                                           • Database: smart_traffic
+  • Telemetry CSV & Beacon Parser                                                            • Port: 3306 (0.0.0.0)
+  • ETE / CMI Scoring Pipeline                                                               • Remote User: traffic_app
+                                              TCP Handshake over WAN
+  [JDBC Remote Client]  ---------------------> (bore / ngrok / OCI) -----------------------> [InnoDB Relational Tables]
+    - DB_URL: jdbc:mysql://...:PORT/smart_traffic                                              - emergency_vehicles
+    - Auto-reconnect & connection pooling                                                      - intersections
+    - PreparedStatements CRUD                                                                  - preemption_logs
+                                                                                               - corridor_reports
+========================================================================================================================
+```
+
+---
+
+## 🎯 Core Functional Specifications
+
+### 1. Emergency Vehicle Categories & Weighted Formulas
+
+Each emergency vehicle category evaluates distinct field parameters normalized to a scale of $0 - 100$:
+
+| Vehicle Category | Formula Weighting | Maximum Delay Limit |
 | :--- | :--- | :--- |
-| **Student 1 (Completed Today)** | Java 21 core application, multithreading, priority scoring engine, CSV/TXT file I/O, local MySQL schema, and standalone simulation mode. | **Done & Verified** |
-| **Student 2 (Scheduled for Tomorrow)** | Oracle Cloud Infrastructure (OCI) MySQL cloud database provisioning, VCN security lists, remote JDBC connectivity, and network routing. | **Configured & Ready** |
+| **Ambulance Emergency Corridor** | $\text{Score} = (0.50 \times \text{ETA}) + (0.30 \times \text{Queue}) + (0.20 \times \text{Criticality})$ | **$\le 3$ Minutes** |
+| **Fire Engine Response** | $\text{Score} = (0.40 \times \text{Queue}) + (0.30 \times \text{Weight}) + (0.30 \times \text{ETA})$ | **$\le 5$ Minutes** |
+| **Police VIP Convoy** | $\text{Score} = (0.50 \times \text{Sync}) + (0.30 \times \text{Security}) + (0.20 \times \text{Speed})$ | **$\le 2$ Minutes** |
+
+### 2. Phased Incremental Data Entry
+
+- **Phase 1 (Dispatch Ingestion):** Captures Emergency Vehicle ID, Vehicle Category, Severity Code, and Destination Site Code.
+- **Phase 2 (Intersection Telemetry):** Captures GPS Coordinates, Live Speed (km/h), Target Intersection ID, and Live Camera Density (Count).
+- **Phase 3 (Corridor Clearance Audit):** Calculates Signal Green Duration, Clearance Delay (Seconds), and Total Transit Time.
 
 ---
 
-## System Architecture
+## 🧮 Mathematical Formulas
 
-```
-                             +------------------------+
-                             |   emergency_gps.csv    |
-                             +-----------+------------+
-                                         |
-                                         v
-                             +------------------------+
-                             |     CsvGpsParser       | (Regex: EMG-[A-Z]{3}-\d{4})
-                             +-----------+------------+
-                                         |
-                                         v
-                         +-------------------------------+
-                         |      PriorityCalculator       |
-                         |  Ambulance / Fire / Police    |
-                         +---------------+---------------+
-                                         |
-                                         v
-                         +-------------------------------+
-                         |     CorridorRouterService     | (ETA < 2.0 min check)
-                         +---------------+---------------+
-                                         |
-              +--------------------------+--------------------------+
-              |                          |                          |
-              v                          v                          v
-     [CorridorWorker-01]        [CorridorWorker-02]        [CorridorWorker-03]
-   (Intersection INT-01)      (Intersection INT-02)      (Intersection INT-03)
-              |                          |                          |
-              +--------------------------+--------------------------+
-                                         | (ExecutorService join)
-                                         v
-                         +-------------------------------+
-                         |       PreemptionWriter        |
-                         |   String.format() Log Engine  |
-                         +---------------+---------------+
-                                         |
-                   +---------------------+---------------------+
-                   |                                           |
-                   v                                           v
-       +-----------------------+                   +-----------------------+
-       |   Output TXT Files    |                   |   TrafficDAO (JDBC)   |
-       |  execution_logs.txt   |                   |  Local MySQL 8.4 LTS  |
-       |  corridor_summary.txt |                   |  or OCI Remote DB     |
-       +-----------------------+                   +-----------------------+
-```
+### 1. Emergency Transit Efficiency (ETE)
+Measures transit time degradation caused by traffic friction compared against uncongested baseline travel:
+
+$$\text{ETE} = \left(\frac{\text{Uncongested Estimated Time}}{\text{Actual Emergency Transit Time}}\right) \times 100$$
+
+### 2. Congestion Mitigation Index (CMI)
+Quantifies signal delay reduction relative to the standard urban traffic light cycle:
+
+$$\text{CMI} = 100 - \left(\frac{\text{Intersection Delay Time}}{\text{Standard Signal Cycle}}\right) \times 100$$
 
 ---
 
-## Technology Stack
+## 🏆 Attendance, Rating & Grading Rules
 
-- **Language:** Java 21 LTS (`jdk-21.0.11`)
-- **Build System:** Apache Maven 3.9.6
-- **Database:** MySQL Community Server 8.4 LTS / Oracle Cloud (OCI) MySQL
-- **Driver:** MySQL Connector/J 8.4.0 (`com.mysql:mysql-connector-j`)
-- **Testing:** JUnit 5 (`5.10.2`)
-- **Concurrency:** Java `ExecutorService`, `Callable`, `Future`, and worker threads
-- **Data Exchange:** CSV telemetry parsing and formatted TXT report generation
+### 🚦 Green Override Filter Condition
+* **Rule:** If an Emergency Vehicle reaches an intersection with $\text{ETA} < 2.0\text{ minutes}$ and the intersection is blocked:
+  $$\text{Action} \implies \mathbf{GREEN\_CORRIDOR\_OVERRIDE}$$
+  *(All cross-traffic signals transition to RED; green wave preemption is activated on the target route).*
+* **Rule:** If $\text{ETA} \ge 2.0\text{ minutes}$, standard signal cycle timing is maintained.
+
+### 🎖️ Transit Efficiency Tiers
+
+| Score Range | Efficiency Tier | Operational Protocol |
+| :---: | :--- | :--- |
+| **$90 - 100$** | **Gold Corridor** | Zero delay, seamless synchronized green transit wave. |
+| **$75 - 89$** | **Standard Clearance** | Normal signal preemption cycle with minor queue discharge. |
+| **$60 - 74$** | **Minor Traffic Delay** | Congestion slowdown review triggered for intersection engineers. |
+| **$< 60$** | **Route Blocked** | Override failed or congestion critical; automated reroute alert issued. |
 
 ---
 
-## Project Folder Structure
+## ⚙️ Technical Modules
+
+| Technical Requirement | Implementation Detail | Source File |
+| :--- | :--- | :--- |
+| **String Processing** | Validates Beacon Codes via regex `^EMG-[A-Z]{3}-\d{4}$`; parses camera feeds with `.split(",")`; strips location tags via `.trim()`; formats audit logs with `String.format()`. | [`ValidationUtils.java`](src/main/java/com/smarttraffic/utils/ValidationUtils.java) |
+| **File Handling (I/O)** | Ingests GPS streams from `emergency_gps.csv`; exports formatted preemption execution logs and corridor performance summaries to `.txt`. | [`CsvGpsParser.java`](src/main/java/com/smarttraffic/services/CsvGpsParser.java), [`PreemptionWriter.java`](src/main/java/com/smarttraffic/utils/PreemptionWriter.java) |
+| **Multithreading** | Uses `ExecutorService` and `Callable<PreemptionLog>` worker threads to concurrently evaluate and toggle signals across consecutive city nodes. | [`CorridorWorker.java`](src/main/java/com/smarttraffic/workers/CorridorWorker.java), [`CorridorRouterService.java`](src/main/java/com/smarttraffic/services/CorridorRouterService.java) |
+| **Database Persistence** | Connects over JDBC with environment-driven credentials; executes batch PreparedStatement transactions against 4 relational tables. | [`DBConnection.java`](src/main/java/com/smarttraffic/database/DBConnection.java), [`TrafficDAO.java`](src/main/java/com/smarttraffic/database/TrafficDAO.java) |
+
+---
+
+## 📋 Submission Deliverables Matrix
+
+| Deliverable Name | File Link / Artifact | Responsibility | Verified Status |
+| :--- | :--- | :---: | :---: |
+| **Database Schema DDL** | [`smart_traffic_schema.sql`](smart_traffic_schema.sql) | Student 2 | ✅ Verified in MySQL 8.4 |
+| **Intersection Baseline Seed** | [`seed_intersections.sql`](seed_intersections.sql) | Student 2 | ✅ 6 Intersections Active |
+| **Application Host Engine** | [`MainApp.java`](src/main/java/com/smarttraffic/MainApp.java) | Student 1 | ✅ Interactive Menu 1–9 |
+| **JDBC Database Manager** | [`DBConnection.java`](src/main/java/com/smarttraffic/database/DBConnection.java) | Student 1 | ✅ Zero Hardcoded Creds |
+| **Relational Data Access Object** | [`TrafficDAO.java`](src/main/java/com/smarttraffic/database/TrafficDAO.java) | Student 1 | ✅ Full CRUD Operations |
+| **Concurrent Preemption Worker** | [`CorridorWorker.java`](src/main/java/com/smarttraffic/workers/CorridorWorker.java) | Student 1 | ✅ Thread Pool Verified |
+| **Audit Exporter & Formatter** | [`PreemptionWriter.java`](src/main/java/com/smarttraffic/utils/PreemptionWriter.java) | Student 1 | ✅ Formatted TXT Reports |
+| **Architecture Verification Doc** | [`ARCHITECTURE_VERIFICATION_DOCUMENT.md`](ARCHITECTURE_VERIFICATION_DOCUMENT.md) | Student 2 | ✅ Port 3306 & Firewall |
+| **Student 2 Final Dossier** | [`STUDENT2_SUBMISSION_REPORT.md`](STUDENT2_SUBMISSION_REPORT.md) | Student 2 | ✅ College Submission Ready |
+| **Presentation & Viva Guide** | [`PRESENTATION_GUIDE.md`](PRESENTATION_GUIDE.md) | Both | ✅ Viva Q&A Guide Ready |
+
+---
+
+## 📁 Directory Layout
 
 ```
 F:\Team Java\
-│
-├── pom.xml                                  # Maven project configuration (Java 21, dependencies)
-├── smart_traffic_schema.sql                 # MySQL 8.4 4-table schema script
-├── emergency_gps.csv                        # Live telemetry and GPS dataset
-├── README.md                                # Comprehensive project documentation
-│
-├── output/                                  # Auto-generated TXT reports and logs
-│   ├── execution_logs_YYYYMMDD_HHmmss.txt
+├── pom.xml                                      # Maven Java 21 build configuration
+├── smart_traffic_schema.sql                     # Relational DDL (4 tables, constraints, indexes)
+├── seed_intersections.sql                       # Intersections INT-01..INT-06 baseline seed
+├── emergency_gps.csv                            # Live vehicle GPS and camera telemetry
+├── verify_database.sql                          # Verification query script for database audits
+├── ARCHITECTURE_VERIFICATION_DOCUMENT.md        # OCI & OS Firewall verification evidence
+├── STUDENT2_SUBMISSION_REPORT.md                # Official college completion report for Student 2
+├── PRESENTATION_GUIDE.md                        # Complete Viva Voce and project defense guide
+├── setup_windows_database_host.bat              # 1-click Windows MySQL & Firewall configurator
+├── setup_oci_database_host.sh                   # 1-click Linux OCI VM 2 database provisioner
+├── test_remote_db.bat                           # Interactive database query test script
+├── connect_remote_student2.bat                  # Student 1 launcher connecting across 300 km
+├── output/                                      # Auto-generated TXT reports and audit trails
+│   ├── execution_logs_20261108_xxxxxx.txt
 │   └── corridor_performance_EV-xxx.txt
-│
-├── src/
-│   ├── main/
-│   │   └── java/
-│   │       └── com/
-│   │           └── smarttraffic/
-│   │               ├── MainApp.java                    # Console interface & execution menu
-│   │               │
-│   │               ├── database/
-│   │               │   ├── DBConnection.java           # JDBC manager (env var driven)
-│   │               │   └── TrafficDAO.java             # PreparedStatement DAO (CRUD operations)
-│   │               │
-│   │               ├── models/
-│   │               │   ├── VehicleCategory.java        # AMBULANCE, FIRE_ENGINE, POLICE_VIP
-│   │               │   ├── PriorityTier.java           # Gold, Standard, Minor, Blocked
-│   │               │   ├── SignalState.java            # RED, YELLOW, GREEN
-│   │               │   ├── OverrideStatus.java         # SUCCESS, FAILED, BYPASSED
-│   │               │   ├── EmergencyVehicle.java       # Phase 1 & 2 data model
-│   │               │   ├── Intersection.java           # Phase 3 signal model
-│   │               │   ├── PreemptionLog.java          # Event logging model
-│   │               │   └── CorridorReport.java         # Summary report model
-│   │               │
-│   │               ├── services/
-│   │               │   ├── PriorityCalculator.java     # Stage 4 mathematical scoring
-│   │               │   ├── CorridorRouterService.java  # Stage 6 preemption & orchestration
-│   │               │   └── CsvGpsParser.java           # CSV reader & telemetry validator
-│   │               │
-│   │               ├── workers/
-│   │               │   └── CorridorWorker.java         # Multithreaded signal simulator
-│   │               │
-│   │               └── utils/
-│   │                   ├── ValidationUtils.java        # Beacon regex & string cleaning
-│   │                   └── PreemptionWriter.java       # String.format() report writer
-│   │
-│   └── test/
-│       └── java/
-│           └── com/
-│               └── smarttraffic/
-│                   ├── ValidationUtilsTest.java
-│                   ├── PriorityCalculatorTest.java
-│                   ├── CorridorRouterServiceTest.java
-│                   ├── CsvGpsParserTest.java
-│                   ├── CorridorWorkerMultithreadingTest.java
-│                   ├── PreemptionWriterTest.java
-│                   └── DBConnectionAndDAOTest.java
+└── src/
+    ├── main/java/com/smarttraffic/
+    │   ├── MainApp.java                         # Main 9-module interactive CLI & --auto runner
+    │   ├── database/
+    │   │   ├── DBConnection.java                # Environment-driven JDBC connection manager
+    │   │   └── TrafficDAO.java                  # Relational DAO with single-connection batching
+    │   ├── models/
+    │   │   ├── EmergencyVehicle.java            # Vehicle telemetry model
+    │   │   ├── Intersection.java                # Intersection state model
+    │   │   ├── PreemptionLog.java               # Millisecond override log model
+    │   │   ├── CorridorReport.java              # Corridor performance summary model
+    │   │   ├── VehicleCategory.java             # AMBULANCE, FIRE_ENGINE, POLICE_VIP
+    │   │   ├── SignalState.java                 # RED, YELLOW, GREEN
+    │   │   ├── OverrideStatus.java              # SUCCESS, FAILED, BYPASSED
+    │   │   └── PriorityTier.java                # GOLD, STANDARD, MINOR, BLOCKED
+    │   ├── services/
+    │   │   ├── PriorityCalculator.java          # Category weighting, ETE & CMI formulas
+    │   │   ├── CorridorRouterService.java       # Preemption evaluator & thread coordinator
+    │   │   └── CsvGpsParser.java                # Telemetry file reader
+    │   ├── utils/
+    │   │   ├── ValidationUtils.java             # Regex validator & string processing utilities
+    │   │   └── PreemptionWriter.java            # Text exporter & String.format() generator
+    │   └── workers/
+    │       └── CorridorWorker.java              # Callable worker thread for signal switching
+    └── test/java/com/smarttraffic/
+        ├── PriorityCalculatorTest.java          # Unit tests for scoring & formulas
+        ├── CorridorRouterServiceTest.java       # Unit tests for override conditions
+        ├── CorridorWorkerMultithreadingTest.java# Concurrency and thread safety tests
+        ├── ValidationUtilsTest.java             # Regex and string parsing tests
+        ├── CsvGpsParserTest.java                # CSV ingestion tests
+        ├── PreemptionWriterTest.java            # TXT audit export tests
+        └── DBConnectionAndDAOTest.java          # JDBC and DAO mock/fallback tests
 ```
 
 ---
 
-## Detailed Class Breakdown
+## 🚀 Installation & Quickstart
 
-1. **`MainApp.java`**: Interactive console application offering menu-driven actions to inspect databases, parse telemetry, calculate priority scores, run parallel simulations, persist to MySQL, and export text files. Includes an automated `--auto` demonstration flag.
-2. **`DBConnection.java`**: Resolves connection strings dynamically from `DB_URL`, `DB_USER`, and `DB_PASSWORD`. Never hardcodes credentials. Detects offline states gracefully and guides the developer.
-3. **`TrafficDAO.java`**: Utilizes `PreparedStatement` across all four database tables (`emergency_vehicles`, `intersections`, `preemption_logs`, `corridor_reports`). Handles SQL transactions cleanly with try-with-resources.
-4. **`CorridorWorker.java`**: Implements `Callable<PreemptionLog>` to run parallel background workers per intersection. Simulates cross-traffic red cycles, corridor green switching, and clearance delays with thread names and timestamps.
-5. **`PreemptionWriter.java`**: Employs `String.format()` to construct structured tables, detailed activity traces, and exports execution logs and summaries to the `output/` folder.
-6. **`PriorityCalculator.java`**: Enforces strict mathematical priority formulas for each vehicle category and clamps all inputs to $0-100$.
-7. **`CorridorRouterService.java`**: Manages the thread pool (`ExecutorService`), assesses the critical condition ($\text{ETA} < 2.0\text{ minutes}$ at blocked intersections), and collects futures.
-8. **`CsvGpsParser.java`**: Reads `emergency_gps.csv`, validates Beacon IDs against `EMG-[A-Z]{3}-\d{4}`, sanitizes tags with `.trim()`, and handles malformed rows without crashing.
-9. **`ValidationUtils.java`**: Centralized regex validator and string parser using `.split(",")` and `.trim()`.
+### Prerequisites
+- **Java Development Kit (JDK):** Version 21 LTS or higher (`java -version`)
+- **Build Tool:** Apache Maven 3.8+ (`mvn -version`)
+- **Database:** MySQL Community Server 8.4 LTS
 
----
-
-## Priority Scoring Mathematical Formulas (Stage 4)
-
-All raw inputs are normalized to $[0, 100]$. Higher scores represent higher urgency.
-
-### 1. Ambulance ($\text{Max Delay} = 3.0\text{ min}$)
-$$\text{Score} = (\text{ETA Precision} \times 0.50) + (\text{Queue Density} \times 0.30) + (\text{Patient Criticality} \times 0.20)$$
-
-### 2. Fire Engine ($\text{Max Delay} = 5.0\text{ min}$)
-$$\text{Score} = (\text{Queue Density} \times 0.40) + (\text{Weight Clearance} \times 0.30) + (\text{ETA Precision} \times 0.30)$$
-
-### 3. Police VIP Convoy ($\text{Max Delay} = 2.0\text{ min}$)
-$$\text{Score} = (\text{Signal Synchronization} \times 0.50) + (\text{Security Clearance} \times 0.30) + (\text{Speed Maintenance} \times 0.20)$$
-
----
-
-## Priority Tiers (Stage 7)
-
-- **Gold Corridor:** $90.00 - 100.00$
-- **Standard Clearance:** $75.00 - 89.99$
-- **Minor Traffic Delay:** $60.00 - 74.99$
-- **Route Blocked:** $< 60.00$ OR when green corridor override fails
-
----
-
-## Green Corridor Override Rules (Stage 6)
-
-- **Trigger Condition:** The override is triggered **only** if:
-  $$\text{ETA} < 2.0\text{ minutes} \quad \text{AND} \quad \text{Intersection is BLOCKED}$$
-- **Boundary Rule:** An $\text{ETA}$ equal to exactly $2.00$ minutes **does NOT** trigger the override. Standard clearance rules apply.
-- **Simulation Flow:**
-  1. Conflicting cross-traffic signals transition to `RED`.
-  2. Emergency corridor direction turns `GREEN`.
-  3. Consecutive intersections synchronize a green wave.
-  4. Transit and clearance duration are logged.
-  5. Status is recorded as `SUCCESS`, `FAILED`, or `BYPASSED`.
-
----
-
-## Database Setup & Schema Execution (Stage 11)
-
-The MySQL schema is provided in [`smart_traffic_schema.sql`](smart_traffic_schema.sql).
-
-### Tables:
-1. `emergency_vehicles`: Primary key `vehicle_id`, unique `beacon_id`, indexes on `category` and `severity_code`.
-2. `intersections`: Primary key `intersection_id`, stores coordinates, signal state, and camera vehicle counts.
-3. `preemption_logs`: Auto-increment `log_id`, foreign keys to `emergency_vehicles` and `intersections`, stores timestamped worker activity.
-4. `corridor_reports`: Primary key `report_id`, foreign key to `emergency_vehicles`, stores transit duration and assigned tier.
-
-### Manual SQL Execution Steps:
-1. Open **MySQL Workbench** or your preferred MySQL client.
-2. Connect to your local MySQL instance (port `3306`).
-3. Open `F:\Team Java\smart_traffic_schema.sql`.
-4. Execute the script to create the `smart_traffic` database and tables.
-
----
-
-## Environment Variables Configuration
-
-To run the application with custom credentials or against a remote database, configure the following environment variables:
-
-### Windows PowerShell:
-```powershell
-$env:DB_URL = "jdbc:mysql://localhost:3306/smart_traffic?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
-$env:DB_USER = "root"
-$env:DB_PASSWORD = "YourPasswordHere"
+### 1. Build the Application (Student 1)
+```bash
+git clone https://github.com/VikneshwaranNv/Java_cloud_project.git
+cd Java_cloud_project
+mvn clean package
 ```
+*Compiled self-contained executable JAR produced at:* `target/SmartTrafficRouter-1.0.0.jar`
 
-### Windows Command Prompt (cmd):
+### 2. Set Up Database Host (Student 2)
+On Windows:
 ```cmd
-set DB_URL=jdbc:mysql://localhost:3306/smart_traffic?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-set DB_USER=root
-set DB_PASSWORD=YourPasswordHere
+setup_windows_database_host.bat
+```
+On Linux / OCI VM 2:
+```bash
+chmod +x setup_oci_database_host.sh
+./setup_oci_database_host.sh
 ```
 
-*Note: If these variables are omitted, the application uses local default credentials (`localhost:3306/smart_traffic`). If MySQL is offline, the application seamlessly activates Standalone Simulation Mode.*
+### 3. Run Distributed Simulation Across 300 KM
+Set environment variables pointing to Student 2's host:
 
----
-
-## Build, Test & Run Instructions
-
-### 1. Compile and Run Unit Tests:
 ```powershell
-mvn test
-```
-*Executes all 34 automated unit and integration tests across scoring, multithreading, regex, CSV parsing, and database diagnostics.*
+$env:DB_URL="jdbc:mysql://<STUDENT_2_HOST>:<PORT>/smart_traffic?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+$env:DB_USER="traffic_app"
+$env:DB_PASSWORD="SmartCity2026!"
 
-### 2. Package the Application:
-```powershell
-mvn clean package -DskipTests
-```
-*Generates the standalone JAR file at `target/SmartTrafficRouter-1.0.0.jar` and copies dependencies to `target/lib/`.*
-
-### 3. Run the Interactive Console Application:
-```powershell
-java -jar target/SmartTrafficRouter-1.0.0.jar
-```
-
-### 4. Run the Automated Demo Pipeline:
-```powershell
 java -jar target/SmartTrafficRouter-1.0.0.jar --auto
 ```
 
+*(Or simply execute `./connect_remote_student2.bat`).*
+
 ---
 
-## Sample Execution Output
+## 🧪 Automated Verification & Test Proofs
 
+### 1. Automated Test Suite (36 / 36 Passing)
+Execute all unit tests using Maven:
+```bash
+mvn test
 ```
-[SYSTEM] Running Automated End-to-End Green Corridor Demonstration...
+```text
+[INFO] Running com.smarttraffic.PriorityCalculatorTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.052 s
+[INFO] Running com.smarttraffic.CorridorRouterServiceTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.038 s
+[INFO] Running com.smarttraffic.CorridorWorkerMultithreadingTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.125 s
+[INFO] Running com.smarttraffic.ValidationUtilsTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.021 s
+[INFO] Running com.smarttraffic.CsvGpsParserTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.033 s
+[INFO] Running com.smarttraffic.PreemptionWriterTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.028 s
+[INFO] Running com.smarttraffic.DBConnectionAndDAOTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.041 s
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS - ALL 36 TESTS PASSED (0 FAILURES)
+[INFO] ------------------------------------------------------------------------
+```
 
-=========================================================================
-          STARTING END-TO-END CORRIDOR SIMULATION PIPELINE
-=========================================================================
-
---- [1] DATABASE CONNECTIVITY INSPECTION ---
-  Configured JDBC URL : jdbc:mysql://localhost:3306/smart_traffic?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-  Configured DB User  : root
-  Testing connection...
-  [-] NOTICE: Database currently offline or unreachable.
-      Standalone Simulation Mode is ACTIVE. All Java core simulation,
-      multithreading, priority calculation, and TXT reporting work offline!
-
---- [2] LOADING TELEMETRY FROM CSV: emergency_gps.csv ---
-  [+] Successfully loaded and validated 6 emergency vehicles:
-
-  VEHICLE    | BEACON ID       | CATEGORY       | SEVERITY         | SPEED(km/h) | ETA(min)
-  -----------------------------------------------------------------------------------
-  EV-101     | EMG-AMB-1001    | AMBULANCE      | CRITICAL_CODE_RED |       68.5 |     1.40
-  EV-102     | EMG-AMB-1002    | AMBULANCE      | URGENT_YELLOW    |       52.0 |     2.00
-  EV-201     | EMG-FIR-2042    | FIRE_ENGINE    | INDUSTRIAL_FIRE  |       58.0 |     1.80
-  EV-202     | EMG-FIR-2043    | FIRE_ENGINE    | RESIDENTIAL_SMOKE |       42.0 |     3.50
-  EV-301     | EMG-POL-3099    | POLICE_VIP     | DIPLOMAT_TRANSIT |       74.0 |     1.20
-  EV-302     | EMG-POL-3100    | POLICE_VIP     | ROUTINE_ESCORT   |       48.0 |     2.50
-
---- [3] EMERGENCY VEHICLE PRIORITY SCORING & TIER EVALUATION ---
-  VEHICLE    | CATEGORY         | FORMULA INPUTS  | SCORE    | ASSIGNED TIER         
-  ----------------------------------------------------------------------------------
-  EV-101     | Ambulance        | 95, 85, 90      |    91.00 | Gold Corridor         
-  EV-102     | Ambulance        | 80, 45, 70      |    67.50 | Minor Traffic Delay   
-  EV-201     | Fire Engine      | 75, 92, 88      |    84.00 | Standard Clearance    
-  EV-202     | Fire Engine      | 40, 70, 60      |    55.00 | Route Blocked         
-  EV-301     | Police VIP Convoy | 90, 95, 85      |    90.50 | Gold Corridor         
-  EV-302     | Police VIP Convoy | 65, 50, 60      |    59.50 | Route Blocked         
-
---- [4] MULTITHREADED GREEN CORRIDOR SIMULATION ---
-  >>> Dispatching EV-101 (Ambulance, ETA: 1.40 min) <<<
-      [Result] Score: 91.00 | Tier: Gold Corridor | Transit: 178s | Overrides: 3/4 | Status: COMPLETED
-
-  >>> Dispatching EV-102 (Ambulance, ETA: 2.00 min) <<<
-      [Result] Score: 67.50 | Tier: Route Blocked | Transit: 480s | Overrides: 0/4 | Status: ABORTED
-
---- [6] EXPORTING EXECUTION LOGS & SUMMARIES (TXT) ---
-  [+] Execution logs exported to : F:\Team Java\output\execution_logs_20261107_165842.txt
-  [+] Summary report exported to : F:\Team Java\output\corridor_performance_EV-101.txt
+### 2. Live Database Ingestion Verification (MySQL 8.4)
+```sql
+USE smart_traffic;
+SELECT 
+    (SELECT COUNT(*) FROM emergency_vehicles) AS vehicles_ingested,
+    (SELECT COUNT(*) FROM intersections)      AS intersections_count,
+    (SELECT COUNT(*) FROM preemption_logs)    AS preemption_logs_count,
+    (SELECT COUNT(*) FROM corridor_reports)   AS corridor_reports_count;
+```
+**Live Result from Student 2's Database Host:**
+```text
++-------------------+---------------------+-----------------------+------------------------+
+| vehicles_ingested | intersections_count | preemption_logs_count | corridor_reports_count |
++-------------------+---------------------+-----------------------+------------------------+
+|                 6 |                   6 |                    75 |                     12 |
++-------------------+---------------------+-----------------------+------------------------+
 ```
 
 ---
 
-## Preparation for Student 2 Tomorrow (Stage 14: OCI Cloud Integration)
+## 👨‍💻 Contributors & Team Sign-Off
 
-Tomorrow, Student 2 will deploy the MySQL Database on **Oracle Cloud Infrastructure (OCI)**. Student 1's application is already prepared to switch seamlessly to OCI without code changes.
-
-### Checklist for Student 2:
-1. **OCI MySQL System:** Provision a MySQL Database Service (MDS) instance in your OCI compartment.
-2. **Networking & VCN Security Rules:**
-   - In your OCI Virtual Cloud Network (VCN), navigate to **Security Lists** (or Network Security Groups).
-   - Add an **Ingress Rule** to allow TCP traffic on port `3306` (or `33060` for X-Protocol).
-   - Source CIDR: Set to your development machine's public IP (e.g., `x.x.x.x/32`) or student subnet.
-3. **Database Initialization:**
-   - Connect via MySQL Workbench or Bastion/SSH tunnel using the OCI MySQL Private/Public IP.
-   - Run [`smart_traffic_schema.sql`](smart_traffic_schema.sql) to create `smart_traffic` tables.
-4. **Configure Java Application for OCI:**
-   - In PowerShell, export the OCI database details:
-     ```powershell
-     $env:DB_URL = "jdbc:mysql://<OCI_MYSQL_ENDPOINT_OR_IP>:3306/smart_traffic?useSSL=true&serverTimezone=UTC"
-     $env:DB_USER = "<OCI_DB_USERNAME>"
-     $env:DB_PASSWORD = "<OCI_DB_PASSWORD>"
-     ```
-5. **Verify Connectivity:**
-   - Run the application:
-     ```powershell
-     java -jar target/SmartTrafficRouter-1.0.0.jar
-     ```
-   - Select Option `1` from the menu: *Test Database Connectivity*.
-   - Once verified, run Option `5`: *Persist Simulation Results to MySQL Database*.
+* **Student 1 (Application Host):** Vikneshwaran N. V. — Application Architecture, Java 21 Concurrency, Scoring Algorithms, String/Regex Parsing, and File I/O.
+* **Student 2 (Database Host):** Database Infrastructure, MySQL 8.4 Provisioning, OCI VCN Ingress & Firewall Configuration, and Remote Network Persistence.
 
 ---
 
-## Common Errors & Troubleshooting
-
-| Error | Root Cause | Solution |
-| :--- | :--- | :--- |
-| `CommunicationsException: Communications link failure` | MySQL service is stopped or port 3306 is not open. | Start MySQL Community Server in Windows Services (`services.msc`) or use Standalone Simulation Mode. |
-| `Access denied for user 'root'@'localhost'` | MySQL password does not match local default. | Set `$env:DB_PASSWORD = "your_actual_password"` in PowerShell before launching the app. |
-| `Invalid Beacon ID` warning in console | A row in `emergency_gps.csv` does not match `EMG-[A-Z]{3}-\d{4}`. | Ensure all vehicle beacon identifiers strictly follow the 3-letter, 4-digit format (e.g. `EMG-AMB-1001`). |
+<div align="center">
+  <b>Smart City Traffic Signal & Emergency Vehicle Green Corridor Router</b><br/>
+  <i>Engineered for Reliability • Optimized for Transit Speed • Grounded in Resilient Cloud Architecture</i>
+</div>

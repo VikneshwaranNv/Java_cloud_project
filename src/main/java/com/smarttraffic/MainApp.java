@@ -531,31 +531,31 @@ public class MainApp {
             return;
         }
 
-        try {
+        try (java.sql.Connection conn = DBConnection.getConnection()) {
             int vCount = 0;
             for (EmergencyVehicle v : loadedVehicles) {
-                trafficDAO.insertEmergencyVehicle(v);
+                trafficDAO.insertEmergencyVehicle(conn, v);
                 vCount++;
             }
             System.out.printf("  [+] Persisted %d emergency vehicles to 'emergency_vehicles' table.\n", vCount);
 
             int iCount = 0;
             for (Intersection i : sampleCorridor) {
-                trafficDAO.insertIntersection(i);
+                trafficDAO.insertIntersection(conn, i);
                 iCount++;
             }
             System.out.printf("  [+] Persisted %d intersections to 'intersections' table.\n", iCount);
 
             int lCount = 0;
             for (PreemptionLog l : allRecordedLogs) {
-                trafficDAO.insertPreemptionLog(l);
+                trafficDAO.insertPreemptionLog(conn, l);
                 lCount++;
             }
             System.out.printf("  [+] Persisted %d preemption events to 'preemption_logs' table.\n", lCount);
 
             int rCount = 0;
             for (CorridorReport r : allRecordedReports) {
-                trafficDAO.insertCorridorReport(r);
+                trafficDAO.insertCorridorReport(conn, r);
                 rCount++;
             }
             System.out.printf("  [+] Persisted %d corridor performance reports to 'corridor_reports' table.\n", rCount);
