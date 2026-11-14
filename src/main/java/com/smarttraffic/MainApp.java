@@ -66,10 +66,20 @@ public class MainApp {
     public static void main(String[] args) {
         MainApp app = new MainApp();
 
-        if (args.length > 0 && "--auto".equalsIgnoreCase(args[0])) {
-            System.out.println("\n[SYSTEM] Running Automated End-to-End Green Corridor Demonstration...\n");
-            app.runEndToEndPipeline();
-            return;
+        if (args.length > 0) {
+            if ("--auto".equalsIgnoreCase(args[0])) {
+                System.out.println("\n[SYSTEM] Running Automated End-to-End Green Corridor Demonstration...\n");
+                app.runEndToEndPipeline();
+                return;
+            } else if ("--host".equalsIgnoreCase(args[0]) && args.length > 1) {
+                String hostIp = args[1];
+                System.out.printf("\n[SYSTEM] Configuring Wi-Fi / Hotspot Connection to Student 2 at %s:3306...\n", hostIp);
+                DBConnection.setCustomConnection(hostIp, 3306, "smart_traffic", "traffic_app", "SmartCity2026!");
+                if (args.length > 2 && "--auto".equalsIgnoreCase(args[2])) {
+                    app.runEndToEndPipeline();
+                    return;
+                }
+            }
         }
 
         app.runInteractiveMenu();
@@ -83,8 +93,8 @@ public class MainApp {
 
         while (!exit) {
             printMenu();
-            System.out.print("Select an evaluation module [1-9]: ");
-            String input = scanner.hasNextLine() ? scanner.nextLine().trim() : "9";
+            System.out.print("Select an evaluation module [1-10]: ");
+            String input = scanner.hasNextLine() ? scanner.nextLine().trim() : "10";
 
             switch (input) {
                 case "1":
@@ -109,14 +119,17 @@ public class MainApp {
                     runDatabaseModule();
                     break;
                 case "8":
-                    runEndToEndPipeline();
+                    runWifiHotspotPairingModule(scanner);
                     break;
                 case "9":
+                    runEndToEndPipeline();
+                    break;
+                case "10":
                     System.out.println("\nExiting Smart City Traffic Router. Thank you!");
                     exit = true;
                     break;
                 default:
-                    System.out.println("\n[!] Invalid selection. Please choose an option from 1 to 9.");
+                    System.out.println("\n[!] Invalid selection. Please choose an option from 1 to 10.");
             }
 
             if (!exit) {
@@ -144,8 +157,9 @@ public class MainApp {
         System.out.println("5. Multithreaded Dynamic Signal Preemption (Corridor Workers & Green Wave Waveform)");
         System.out.println("6. File Handling (I/O) Module (Stream emergency_gps.csv & Export TXT Reports)");
         System.out.println("7. Database Management & Persistence Audit (MySQL InnoDB CRUD & Connection Probe)");
-        System.out.println("8. Run Complete End-to-End Evaluation Pipeline (--auto)");
-        System.out.println("9. Exit Application");
+        System.out.println("8. Wi-Fi / Mobile Hotspot Pairing Mode (Connect to Student 2's Database on Same Wi-Fi)");
+        System.out.println("9. Run Complete End-to-End Evaluation Pipeline (--auto)");
+        System.out.println("10. Exit Application");
         System.out.println("------------------------------------------------------------------------------------");
     }
 
@@ -243,6 +257,19 @@ public class MainApp {
                 );
                 loadedVehicles.add(0, customVehicle);
                 System.out.printf("\n[+] SUCCESS: New vehicle %s (%s) added to active routing pipeline!\n", vid, cat.getDisplayName());
+
+                // Live Sync to Student 2's Database
+                if (DBConnection.testConnection()) {
+                    try {
+                        trafficDAO.insertEmergencyVehicle(customVehicle);
+                        System.out.printf("  [+] PERSISTED TO STUDENT 2'S DATABASE: Record '%s' successfully saved in 'emergency_vehicles' table!\n", vid);
+                    } catch (SQLException e) {
+                        System.err.printf("  [-] Database write warning: %s\n", e.getMessage());
+                    }
+                } else {
+                    System.out.println("  [i] Note: Database currently offline. Vehicle held in memory for local simulation.");
+                    System.out.println("      Tip: Use Option [8] to connect directly to Student 2's database over Wi-Fi / Hotspot.");
+                }
             } catch (Exception e) {
                 System.err.println("[-] Error parsing manual input: " + e.getMessage());
             }
@@ -430,6 +457,100 @@ public class MainApp {
             } catch (SQLException e) {
                 System.err.println("[-] Error querying database: " + e.getMessage());
             }
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // MODULE 8: Wi-Fi / Mobile Hotspot Direct Pairing Engine
+    // -------------------------------------------------------------------------
+    public void runWifiHotspotPairingModule(Scanner scanner) {
+        System.out.println("\n=========================================================================");
+        System.out.println("   MODULE 8: WI-FI / MOBILE HOTSPOT DIRECT PAIRING ENGINE");
+        System.out.println("=========================================================================");
+        System.out.println("Role Architecture:");
+        System.out.println("  * Student 1 (This Machine): Application Host running Green Corridor Engine.");
+        System.out.println("  * Student 2 (Peer Machine): Database Host running MySQL 8.4 LTS on port 3306.");
+        System.out.println("Connection Type: Direct Peer-to-Peer over Same Wi-Fi or Mobile Hotspot (LAN).\n");
+
+        System.out.println("Current Active Database Target:");
+        System.out.printf("  * JDBC URL : %s\n", DBConnection.getJdbcUrl());
+        System.out.printf("  * DB User  : %s\n", DBConnection.getDbUser());
+        System.out.printf("  * Mode     : %s\n\n", DBConnection.isCustomConnectionActive() ? "Custom Wi-Fi / LAN Mode" : "Standard Environment / Local Mode");
+
+        System.out.println("How to connect to Student 2 on the same Wi-Fi / Hotspot:");
+        System.out.println("  1. Ensure both laptops are connected to the SAME Wi-Fi or Mobile Hotspot.");
+        System.out.println("  2. Ask Student 2 for their local IPv4 address (run 'show_my_wifi_ip.bat' on Student 2's laptop).");
+        System.out.println("  3. Student 2's MySQL must be running and listening on port 3306.\n");
+
+        System.out.print("Enter Student 2's Wi-Fi / Hotspot IP Address (e.g. 192.168.43.15) [or press Enter to cancel]: ");
+        String ipInput = scanner.hasNextLine() ? scanner.nextLine().trim() : "";
+
+        if (ipInput.isEmpty()) {
+            System.out.println("[i] Connection configuration unchanged.");
+            return;
+        }
+
+        System.out.print("Enter MySQL Port (default 3306, press Enter for default): ");
+        String portInput = scanner.hasNextLine() ? scanner.nextLine().trim() : "";
+        int port = 3306;
+        if (!portInput.isEmpty()) {
+            try {
+                port = Integer.parseInt(portInput);
+            } catch (NumberFormatException e) {
+                System.out.println("  [!] Invalid port number, defaulting to 3306.");
+            }
+        }
+
+        System.out.print("Enter Database Name (default smart_traffic, press Enter for default): ");
+        String dbInput = scanner.hasNextLine() ? scanner.nextLine().trim() : "";
+        String dbName = dbInput.isEmpty() ? "smart_traffic" : dbInput;
+
+        System.out.print("Enter MySQL Username (default traffic_app, press Enter for default): ");
+        String userInput = scanner.hasNextLine() ? scanner.nextLine().trim() : "";
+        String username = userInput.isEmpty() ? "traffic_app" : userInput;
+
+        System.out.print("Enter MySQL Password (default SmartCity2026!, press Enter for default): ");
+        String passInput = scanner.hasNextLine() ? scanner.nextLine().trim() : "";
+        String password = passInput.isEmpty() ? "SmartCity2026!" : passInput;
+
+        System.out.println("\nTesting connection to Student 2 at " + ipInput + ":" + port + "...");
+        DBConnection.setCustomConnection(ipInput, port, dbName, username, password);
+
+        if (DBConnection.testConnection()) {
+            System.out.println("  [+] SUCCESS: Connected to Student 2's Database over Wi-Fi/Hotspot!");
+            System.out.printf("  [+] Active JDBC URL: %s\n", DBConnection.getJdbcUrl());
+            System.out.println("  [+] Status: Any vehicle you register in Option 1 or simulate in Option 5/9");
+            System.out.println("      will now be stored directly in Student 2's MySQL database in real time!\n");
+
+            try (java.sql.Connection conn = DBConnection.getConnection()) {
+                java.sql.Statement st = conn.createStatement();
+                java.sql.ResultSet rs = st.executeQuery(
+                    "SELECT " +
+                    "(SELECT COUNT(*) FROM emergency_vehicles) AS vehicles, " +
+                    "(SELECT COUNT(*) FROM intersections) AS intersections, " +
+                    "(SELECT COUNT(*) FROM preemption_logs) AS logs, " +
+                    "(SELECT COUNT(*) FROM corridor_reports) AS reports;"
+                );
+                if (rs.next()) {
+                    System.out.println("--- LIVE RECORD COUNTS IN STUDENT 2'S DATABASE ---");
+                    System.out.printf("  * Emergency Vehicles Ingested : %d\n", rs.getInt("vehicles"));
+                    System.out.printf("  * Intersections Active        : %d\n", rs.getInt("intersections"));
+                    System.out.printf("  * Preemption Logs Recorded    : %d\n", rs.getInt("logs"));
+                    System.out.printf("  * Corridor Reports Saved      : %d\n", rs.getInt("reports"));
+                    System.out.println("--------------------------------------------------");
+                }
+            } catch (SQLException e) {
+                System.out.println("  [i] Connected, but query audit returned: " + e.getMessage());
+            }
+        } else {
+            System.out.println("  [-] FAILED: Could not reach Student 2's database at " + ipInput + ":" + port);
+            System.out.println("  Troubleshooting Checklist:");
+            System.out.println("    1. Are both laptops connected to the EXACT same Wi-Fi or Mobile Hotspot?");
+            System.out.println("    2. On Student 2's laptop, is MySQL running (`Get-Process mysqld`)?");
+            System.out.println("    3. Has Student 2 allowed port 3306 in Windows Defender Firewall?");
+            System.out.println("    4. Did Student 2's MySQL bind to 0.0.0.0 (not just 127.0.0.1)?");
+            System.out.println("\n  Reverting to previous connection settings.");
+            DBConnection.resetCustomConnection();
         }
     }
 

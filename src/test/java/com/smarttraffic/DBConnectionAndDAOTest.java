@@ -43,4 +43,22 @@ public class DBConnectionAndDAOTest {
         TrafficDAO dao = new TrafficDAO();
         assertNotNull(dao);
     }
+
+    @Test
+    @DisplayName("DBConnection should support dynamic Wi-Fi / Hotspot custom connection configuration")
+    void testDynamicWifiHotspotConnectionConfiguration() {
+        // Save current state
+        assertFalse(DBConnection.isCustomConnectionActive());
+
+        // Configure custom peer connection for Student 2 over Wi-Fi
+        DBConnection.setCustomConnection("192.168.43.100", 3306, "smart_traffic", "traffic_app", "SmartCity2026!");
+        assertTrue(DBConnection.isCustomConnectionActive());
+        assertTrue(DBConnection.getJdbcUrl().contains("192.168.43.100:3306/smart_traffic"));
+        assertEquals("traffic_app", DBConnection.getDbUser());
+        assertEquals("SmartCity2026!", DBConnection.getDbPassword());
+
+        // Reset to default
+        DBConnection.resetCustomConnection();
+        assertFalse(DBConnection.isCustomConnectionActive());
+    }
 }

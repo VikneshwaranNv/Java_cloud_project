@@ -22,6 +22,8 @@ $filesToCopy = @(
     ".env.example",
     "import_database.bat",
     "import_database.sh",
+    "show_my_wifi_ip.bat",
+    "connect_wifi_student2.bat",
     "pom.xml"
 )
 

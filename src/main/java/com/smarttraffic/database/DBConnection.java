@@ -24,6 +24,11 @@ public class DBConnection {
     public static final String ENV_DB_USER = "DB_USER";
     public static final String ENV_DB_PASSWORD = "DB_PASSWORD";
 
+    // Runtime custom connection parameters (e.g. for Same Wi-Fi / Hotspot LAN pairing)
+    private static volatile String customJdbcUrl = null;
+    private static volatile String customDbUser = null;
+    private static volatile String customDbPassword = null;
+
     static {
         try {
             // Explicitly load MySQL Connector/J driver
@@ -34,9 +39,48 @@ public class DBConnection {
     }
 
     /**
-     * Resolves the active JDBC URL from environment variables, falling back to local default.
+     * Dynamically sets custom connection parameters at runtime (e.g., local Wi-Fi / hotspot pairing).
+     *
+     * @param host     Student 2's IP or hostname (e.g. 192.168.43.15)
+     * @param port     Port (typically 3306)
+     * @param database Database name (e.g. smart_traffic)
+     * @param user     Database username (e.g. traffic_app)
+     * @param password Database password (e.g. SmartCity2026!)
+     */
+    public static void setCustomConnection(String host, int port, String database, String user, String password) {
+        if (host == null || host.trim().isEmpty()) {
+            resetCustomConnection();
+            return;
+        }
+        String db = (database != null && !database.trim().isEmpty()) ? database.trim() : "smart_traffic";
+        customJdbcUrl = String.format(
+            "jdbc:mysql://%s:%d/%s?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&connectTimeout=5000&socketTimeout=10000",
+            host.trim(), port, db
+        );
+        customDbUser = (user != null && !user.trim().isEmpty()) ? user.trim() : "traffic_app";
+        customDbPassword = (password != null) ? password : "SmartCity2026!";
+    }
+
+    /**
+     * Resets runtime connection to environment variable or local default.
+     */
+    public static void resetCustomConnection() {
+        customJdbcUrl = null;
+        customDbUser = null;
+        customDbPassword = null;
+    }
+
+    public static boolean isCustomConnectionActive() {
+        return customJdbcUrl != null && !customJdbcUrl.trim().isEmpty();
+    }
+
+    /**
+     * Resolves the active JDBC URL from custom runtime settings, environment variables, or local default.
      */
     public static String getJdbcUrl() {
+        if (customJdbcUrl != null && !customJdbcUrl.trim().isEmpty()) {
+            return customJdbcUrl.trim();
+        }
         String envUrl = System.getenv(ENV_DB_URL);
         if (envUrl != null && !envUrl.trim().isEmpty()) {
             return envUrl.trim();
@@ -45,9 +89,12 @@ public class DBConnection {
     }
 
     /**
-     * Resolves the active database user from environment variables.
+     * Resolves the active database user from custom runtime settings, environment variables, or local default.
      */
     public static String getDbUser() {
+        if (customDbUser != null && !customDbUser.trim().isEmpty()) {
+            return customDbUser.trim();
+        }
         String envUser = System.getenv(ENV_DB_USER);
         if (envUser != null && !envUser.trim().isEmpty()) {
             return envUser.trim();
@@ -56,9 +103,12 @@ public class DBConnection {
     }
 
     /**
-     * Resolves the active database password from environment variables.
+     * Resolves the active database password from custom runtime settings, environment variables, or local default.
      */
     public static String getDbPassword() {
+        if (customDbPassword != null) {
+            return customDbPassword;
+        }
         String envPass = System.getenv(ENV_DB_PASSWORD);
         if (envPass != null) {
             return envPass;

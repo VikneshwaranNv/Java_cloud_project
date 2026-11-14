@@ -186,7 +186,9 @@ F:\Team Java\
 ├── setup_windows_database_host.bat              # 1-click Windows MySQL & Firewall configurator
 ├── setup_oci_database_host.sh                   # 1-click Linux OCI VM 2 database provisioner
 ├── test_remote_db.bat                           # Interactive database query test script
-├── connect_remote_student2.bat                  # Student 1 launcher connecting across 300 km
+├── show_my_wifi_ip.bat                          # Student 2 1-click Wi-Fi / Hotspot IP detector
+├── connect_wifi_student2.bat                    # Student 1 1-click Wi-Fi / Hotspot direct connector
+├── connect_remote_student2.bat                  # Student 1 launcher connecting across 300 km (Cloud/WAN)
 ├── output/                                      # Auto-generated TXT reports and audit trails
 │   ├── execution_logs_20261108_xxxxxx.txt
 │   └── corridor_performance_EV-xxx.txt
@@ -246,15 +248,29 @@ On Windows:
 ```cmd
 setup_windows_database_host.bat
 ```
+*(Student 2 can run `show_my_wifi_ip.bat` to instantly display their Wi-Fi / Hotspot IPv4 address).*
+
 On Linux / OCI VM 2:
 ```bash
 chmod +x setup_oci_database_host.sh
 ./setup_oci_database_host.sh
 ```
 
-### 3. Run Distributed Simulation Across 300 KM
-Set environment variables pointing to Student 2's host:
+### 3. Connection Modes between Student 1 & Student 2
 
+#### Mode A: Same Wi-Fi / Mobile Hotspot Direct Peer-to-Peer (Local LAN)
+When Student 1 and Student 2 are in the same room, classroom, or connected to Student 1's Mobile Hotspot:
+1. Student 2 connects to the Hotspot/Wi-Fi and runs `show_my_wifi_ip.bat` to see their IP (e.g. `192.168.43.15`).
+2. Student 1 runs:
+   ```cmd
+   connect_wifi_student2.bat
+   ```
+   *(Or launches `java -jar target/SmartTrafficRouter-1.0.0.jar` and selects Menu Option **`[8]`**)*.
+3. Student 1 enters Student 2's IP.
+4. **Live Ingestion:** Any vehicle registered in Option **`[1]`** or simulated in Option **`[5]`** / **`[9]`** is stored directly into Student 2's MySQL database in real time!
+
+#### Mode B: Long Distance WAN (300 KM Cloud Bridge)
+Set environment variables pointing to Student 2's public bore/tunnel endpoint:
 ```powershell
 $env:DB_URL="jdbc:mysql://<STUDENT_2_HOST>:<PORT>/smart_traffic?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
 $env:DB_USER="traffic_app"
@@ -262,7 +278,6 @@ $env:DB_PASSWORD="SmartCity2026!"
 
 java -jar target/SmartTrafficRouter-1.0.0.jar --auto
 ```
-
 *(Or simply execute `./connect_remote_student2.bat`).*
 
 ---

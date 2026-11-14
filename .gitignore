@@ -42,5 +42,8 @@ $RECYCLE.BIN/
 *.zip
 *.tar.gz
 student2_handover_package/
+hs_err_pid*.log
+replay_pid*.log
+
 
 
